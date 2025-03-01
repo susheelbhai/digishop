@@ -5,7 +5,7 @@
 <x-table.element.tr>
     <x-table.element.th data="Business Logo" />
     <x-table.element.td>
-        <img src="{{ asset($data2['logo'] ?? '') }}" alt="" width="64px">
+        <img src="{{$data2->getFirstMediaUrl('logo', 'logo')}}" alt="" width="64px">
     </x-table.element.td>
 </x-table.element.tr>
 <x-table.element.tr>

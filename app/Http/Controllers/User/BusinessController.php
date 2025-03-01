@@ -50,6 +50,15 @@ class BusinessController extends Controller
                 'business_id' => $created->id,
                 'user_id' => Auth::user()->id,
             ]);
+            if($request->hasFile('gst_certificate') && $request->file('gst_certificate')->isValid()){
+                $created->addMediaFromRequest('gst_certificate')->toMediaCollection('gst_certificate');
+            }
+            if($request->hasFile('logo') && $request->file('logo')->isValid()){
+                $created->addMediaFromRequest('logo')->toMediaCollection('logo');
+            }
+            if($request->hasFile('registration_certificate') && $request->file('registration_certificate')->isValid()){
+                $created->addMediaFromRequest('registration_certificate')->toMediaCollection('registration_certificate');
+            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -1,11 +1,16 @@
 <x-table.element.tr>
+    <x-table.element.th data="Login ID" />
+    <x-table.element.td :data="$data2['login_id']" />
+</x-table.element.tr>
+<x-table.element.tr>
+    <x-table.element.th data="Designation" />
+    <x-table.element.td :data="$data2['designation']" />
+</x-table.element.tr>
+<x-table.element.tr>
     <x-table.element.th data="Employee Name" />
     <x-table.element.td :data="$data2['name']" />
 </x-table.element.tr>
-<x-table.element.tr>
-    <x-table.element.th data="Employee GSTIN" />
-    <x-table.element.td :data="$data2['gstin']" />
-</x-table.element.tr>
+
 <x-table.element.tr>
     <x-table.element.th data="Employee Email" />
     <x-table.element.td :data="$data2['email']" />
@@ -28,5 +33,5 @@
 </x-table.element.tr>
 <x-table.element.tr>
     <x-table.element.th data="Employee State" />
-    <x-table.element.td :data="$data2['state']['name']" />
+    <x-table.element.td :data="$data2['state']['name'] ?? ''" />
 </x-table.element.tr>

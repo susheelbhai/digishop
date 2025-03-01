@@ -16,6 +16,6 @@ class ShowData extends Component
 
     public function render(): View|Closure|string
     {
-        return view('components.resources.customer.show-data');
+        return view('components.resources.employee.show-data');
     }
 }

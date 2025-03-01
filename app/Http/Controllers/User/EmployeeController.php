@@ -33,6 +33,7 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         $business_id = Auth::guard('web')->user()->business_id;
         $employee_count = BusinessEmployee::whereBusinessId($business_id)->count();
         $login_id = $business_id+1000 . sprintf('%02d', $employee_count+1);

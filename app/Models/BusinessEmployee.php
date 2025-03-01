@@ -14,4 +14,9 @@ class BusinessEmployee extends Model
     public function business(){
         return $this->belongsTo(Business::class);
     }
+
+    
+    public function state(){
+        return $this->belongsTo(State::class);
+    }
 }

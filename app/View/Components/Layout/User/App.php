@@ -26,6 +26,7 @@ class App extends Component
         ];
         Session::put('user',$user);
         Session::put('current_business',$current_business);
+        Session::put('current_business_logo',$current_business->getFirstMediaUrl('logo', 'logo'));
         Config::set('app.name', $setting['app_name']);
         Config::set('app.dark_logo', $setting['dark_logo']);
         Config::set('app.light_logo', $setting['light_logo']);
