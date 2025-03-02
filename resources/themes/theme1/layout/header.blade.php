@@ -13,15 +13,8 @@
 			    </path>
 			</svg>
 		    </button>
-		    <a href="/" class="flex ms-2 md:me-24">
-			<img src="{{Session::get('current_business_logo')}}" class="h-8 me-3" alt="Business Logo" />
-			@auth('web')
-			    
-			<span
-			    class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">{{ Session::get('current_business')['name'] }}
-			</span>
-			@endauth
-		    </a>
+			{{ $header_logo ?? '' }}
+
 		</div>
 		<div class="flex items-center">
 		    <div class="flex items-center ms-3">

@@ -1,1 +1,2 @@
-<x-layout.header.logo href="{{ route('dashboard') }}" :darkLogo="asset('images/logo/'.config('app.dark_logo', 'dummy.png'))"/>
+<x-layout.header.logo href="{{ route('dashboard') }}" :darkLogo="Session::get('current_business_logo')" :name="Session::get('current_business')['name']" />
+

@@ -16,7 +16,6 @@
 
     @isset($footer)
         <div {{ $footer->attributes->merge(['class' => 'p-4']) }}>
-
             {{ $footer }}
         </div>
     @endisset

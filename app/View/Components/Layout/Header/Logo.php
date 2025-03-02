@@ -10,14 +10,16 @@ use Illuminate\Support\Facades\Session;
 class Logo extends Component
 {
     public $href;
+    public $name;
     public $darkLogo;
     public $darkLogoSmall;
     public $lightLogo;
     public $lightLogoSmall;
     
-    public function __construct($href="#", $darkLogo="#a", $darkLogoSmall="#", $lightLogo="#", $lightLogoSmall="#")
+    public function __construct($href="#", $name ="", $darkLogo="#a", $darkLogoSmall="#", $lightLogo="#", $lightLogoSmall="#")
     {
         $this->href = $href;
+        $this->name = $name;
         $this->darkLogo = $darkLogo;
         $this->darkLogoSmall = $darkLogoSmall;
         $this->lightLogo = $lightLogo;
