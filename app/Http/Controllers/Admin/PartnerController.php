@@ -91,7 +91,7 @@ class PartnerController extends Controller
      */
     public function show($id)
     {
-        $data = Partner::find($id);
+        $data = Partner::findOrFail($id);
         return view('separate.admin.resources.partner.show', compact('data'));
     }
 

@@ -5,82 +5,91 @@ namespace App\Repository;
 use App\Models\Business;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
-use App\Models\BusinessUser;
+use App\Models\BusinessOwner;
 use App\Models\InvoiceSetting;
 use Illuminate\Support\Facades\DB;
 use App\Events\ApplicationApproved;
 use App\Events\ApplicationRejected;
+use App\Models\BusinessUserRelation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use App\Models\BusinessOnboardApplication;
 use App\Contracts\BusinessOnboardApplicationContract;
-use App\Models\InvoiceFormat;
 
 class BusinessOnboardApplicationRepository implements BusinessOnboardApplicationContract
 {
     public function store($request)
     {
+        // dd($request);
         $logo = '';
         $registration_certificate = '';
         $gst_certificate = '';
         $authorised_sign = '';
         $authorised_stamp = '';
         $owner_profile_pic = 'images/profile_pic/user/dummy.png';
-        $data = BusinessOnboardApplication::updateOrCreate([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'registration_number' => $request->registration_number,
-            'gst_number' => $request->gst_number,
-            'address' => $request->address,
-            'city' => $request->city,
-            'pin' => $request->pin,
-            'state_id' => $request->state_id,
-            'owner_name' => $request->owner_name,
-            'owner_phone' => $request->owner_phone,
-            'owner_email' => $request->owner_email,
-            'bank_name' => $request->bank_name,
-            'bank_ifsc' => $request->bank_ifsc,
-            'bank_swift' => $request->bank_swift,
-            'bank_account_holder_name' => $request->bank_account_holder_name,
-            'bank_account_number' => $request->bank_account_number,
-            'iec_code' => $request->iec_code,
-            'ad_code' => $request->ad_code,
-            'arn_code' => $request->arn_code,
-            'payment_terms' => $request->payment_terms,
-            'partner_id' => $request->partner_id,
-            'subscription_type_id' => $request->subscription_type_id,
-        ]);
-        if ($request->logo != '') {
-            $logo = Storage::put('images/logo', $request->logo);
-        }
-        if ($request->registration_certificate != '') {
-            $registration_certificate = Storage::put('business/documents/' . $data['id'], $request->registration_certificate);
-        }
-        if ($request->gst_certificate != '') {
-            $gst_certificate = Storage::put('business/documents/' . $data['id'], $request->gst_certificate);
-        }
-        if ($request->owner_profile_pic != '') {
-            $owner_profile_pic = Storage::put('images/profile_pic/user', $request->owner_profile_pic);
-        }
 
-        if ($request->authorised_sign != '') {
-            $authorised_sign = Storage::put('business/authorised_sign', $request->authorised_sign);
+        DB::beginTransaction();
+        try {
+            $data = BusinessOnboardApplication::updateOrCreate([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'registration_number' => $request->registration_number,
+                'gst_number' => $request->gst_number,
+                'address' => $request->address,
+                'city' => $request->city,
+                'pin' => $request->pin,
+                'state_id' => $request->state_id,
+                'owner_name' => $request->owner_name,
+                'owner_phone' => $request->owner_phone,
+                'owner_email' => $request->owner_email,
+                'bank_name' => $request->bank_name,
+                'bank_ifsc' => $request->bank_ifsc,
+                'bank_swift' => $request->bank_swift,
+                'bank_account_holder_name' => $request->bank_account_holder_name,
+                'bank_account_number' => $request->bank_account_number,
+                'iec_code' => $request->iec_code,
+                'ad_code' => $request->ad_code,
+                'arn_code' => $request->arn_code,
+                'payment_terms' => $request->payment_terms,
+                'partner_id' => $request->partner_id,
+                'subscription_type_id' => $request->subscription_type_id,
+            ]);
+            if ($request->logo != '') {
+                $logo = Storage::put('images/logo', $request->logo);
+            }
+            if ($request->registration_certificate != '') {
+                $registration_certificate = Storage::put('business/documents/' . $data['id'], $request->registration_certificate);
+            }
+            if ($request->gst_certificate != '') {
+                $gst_certificate = Storage::put('business/documents/' . $data['id'], $request->gst_certificate);
+            }
+            if ($request->owner_profile_pic != '') {
+                $owner_profile_pic = Storage::put('images/profile_pic/user', $request->owner_profile_pic);
+            }
+
+            if ($request->authorised_sign != '') {
+                $authorised_sign = Storage::put('business/authorised_sign', $request->authorised_sign);
+            }
+            if ($request->authorised_stamp != '') {
+                $authorised_stamp = Storage::put('business/authorised_stamp', $request->authorised_stamp);
+            }
+            $data->update([
+                'logo' => $logo,
+                'registration_certificate' => $registration_certificate,
+                'gst_certificate' => $gst_certificate,
+                'owner_photo' => $owner_profile_pic,
+                'authorised_sign' => $authorised_sign,
+                'authorised_stamp' => $authorised_stamp,
+            ]);
+            // dd($request);
+            DB::commit();
+            return $data;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-        if ($request->authorised_stamp != '') {
-            $authorised_stamp = Storage::put('business/authorised_stamp', $request->authorised_stamp);
-        }
-        $data->update([
-            'logo' => $logo,
-            'registration_certificate' => $registration_certificate,
-            'gst_certificate' => $gst_certificate,
-            'owner_photo' => $owner_profile_pic,
-            'authorised_sign' => $authorised_sign,
-            'authorised_stamp' => $authorised_stamp,
-        ]);
-        return $data;
     }
 
     public function update($request, $id)
@@ -152,7 +161,6 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
         $title = 'Opps!';
         $class = 'error';
         $message = 'Something went wrong';
-        
         if ($business_data != null) {
             $class = 'error';
             $title = 'Opps!';
@@ -192,13 +200,17 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                     'authorised_stamp' => $data->authorised_stamp,
                     'subscription_type_id' => $data->subscription_type_id,
                 ]);
-                BusinessUser::updateOrCreate([
+                $user = BusinessOwner::updateOrCreate([
                     'business_id' => $business['id'],
                     'name' => $data->owner_name,
                     'email' => $data->owner_email,
                     'phone' => $data->owner_phone,
                     'profile_pic' => $data->owner_photo,
                     'password' => Hash::make($user_password),
+                ]);
+                BusinessUserRelation::updateOrCreate([
+                    'business_id' => $business['id'],
+                    'user_id' => $user->id,
                 ]);
                 Transaction::updateOrCreate(
                     [
@@ -212,6 +224,13 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                         'business_id' => $business['id'],
                     ]
                 );
+                $business->addMediaFromDisk($data->logo, 'local')->preservingOriginal()->toMediaCollection('logo');
+                $business->addMediaFromDisk($data->gst_certificate, 'local')->preservingOriginal()->toMediaCollection('gst_certificate');
+                $business->addMediaFromDisk($data->registration_certificate, 'local')->preservingOriginal()->toMediaCollection('registration_certificate');
+                $business->addMediaFromDisk($data->authorised_sign, 'local')->preservingOriginal()->toMediaCollection('authorised_sign');
+                $business->addMediaFromDisk($data->authorised_stamp, 'local')->preservingOriginal()->toMediaCollection('authorised_stamp');
+                $business->addMediaFromDisk($data->owner_photo, 'local')->preservingOriginal()->toMediaCollection('owner_photo');
+                // dd($data);
                 ApplicationApproved::dispatch($data, $user_password);
                 $data->update(['approved_at' => now()]);
                 DB::commit();
@@ -235,7 +254,7 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
     public function reject($id)
     {
         $data = BusinessOnboardApplication::find($id);
-        
+
         $business_data = Business::where('business_onboard_application_id', $id)->first();
         $title = 'Opps!';
         $class = 'error';

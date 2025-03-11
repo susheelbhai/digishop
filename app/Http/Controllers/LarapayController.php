@@ -17,10 +17,10 @@ class LarapayController extends Controller
         $request_from = request()->headers->get('referer');
         $request['gst_percentage'] = 18;
         $request['gst'] = 0.01 * $request['gst_percentage'];
-        $request['business_id'] = Auth::guard('web')->user()->business_id;
-        $request['name'] = Auth::guard('web')->user()->name;
-        $request['phone'] = Auth::guard('web')->user()->phone;
-        $request['email'] = Auth::guard('web')->user()->email;
+        $request['business_id'] = Auth::guard('business_owner')->user()->business_id;
+        $request['name'] = Auth::guard('business_owner')->user()->name;
+        $request['phone'] = Auth::guard('business_owner')->user()->phone;
+        $request['email'] = Auth::guard('business_owner')->user()->email;
     }
     public function postOrderMethod( $request, $order_id, $gateway)
     {

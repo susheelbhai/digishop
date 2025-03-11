@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -7,6 +7,6 @@
 
     <x-form.element.button1 title="Add Now" type="add" :href="route('order.create')" />
 
-    @livewire('user.order-list')
+    @livewire('business-owner.order-list')
 
-</x-layout.user.app>
+</x-layout.business-owner.app>

@@ -13,7 +13,7 @@
     </form>
 
     <x-slot name='header_logo'>
-        @include('user.layouts.header_logo')
+        @include('user.layouts.header_logo_guest')
     </x-slot>
 
     <x-slot name='header'>

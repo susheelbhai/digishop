@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\ApplicationRejectedToPartner;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendApplicationRejectedNotification
+class SendApplicationRejectedNotification implements ShouldQueue
 {
     /**
      * Create the event listener.

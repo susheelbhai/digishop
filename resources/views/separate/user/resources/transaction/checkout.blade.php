@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -60,13 +60,13 @@
                     <x-form.element.input1 name="redirect_url" type="hidden"
                         value="{{ route('transaction.index') }}" />
                     <x-form.element.input1 name="business_id" type="hidden"
-                        value="{{ Auth::guard('web')->user()->business_id }}" />
+                        value="{{ Auth::guard('business_owner')->user()->business_id }}" />
                     <x-form.element.input1 name="name" type="hidden"
-                        value="{{ Auth::guard('web')->user()->name }}" />
+                        value="{{ Auth::guard('business_owner')->user()->name }}" />
                     <x-form.element.input1 name="email" type="hidden"
-                        value="{{ Auth::guard('web')->user()->email }}" />
+                        value="{{ Auth::guard('business_owner')->user()->email }}" />
                     <x-form.element.input1 name="phone" type="hidden"
-                        value="{{ Auth::guard('web')->user()->phone }}" />
+                        value="{{ Auth::guard('business_owner')->user()->phone }}" />
                     <x-form.element.input1 name="amount" type="hidden" value="{{ $request['amount'] * 1.18 }}" />
                     <x-form.element.input1 name="gst_percentage" type="hidden" value="{{ $gst_percentage }}" />
                     <x-ui.button.small style="primary" class="m-3" name="button" type="submit" title="Pay Now" />
@@ -75,4 +75,4 @@
 
         </div>
     </section>
-</x-layout.user.app>
+</x-layout.business-owner.app>

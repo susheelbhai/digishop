@@ -1,7 +1,7 @@
 <x-bg.color style="{{ $style }}" class="border-b border-black  rounded-t-lg">
     <div class="w-full text-sm font-medium ">
         <x-text.color style="reverse-{{ $style }}"
-            class="block p-4 text-{{ $style }}-foreground rounded-ss-lg ">
+            class="block p-4 rounded-ss-lg ">
             <div class="flex justify-between">
                 <h5 class="inline-block  rounded-ss-lg dark:bg-gray-800 ">
                     <span class="text-xl font-medium ">{{ $slot }}</span>

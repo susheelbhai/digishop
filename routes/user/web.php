@@ -2,18 +2,18 @@
 
 use App\Http\Middleware\HasBalance;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\HomeController;
-use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\ReportController;
-use App\Http\Controllers\User\InvoiceController;
-use App\Http\Controllers\User\ProductController;
-use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\User\SettingController;
-use App\Http\Controllers\User\BusinessController;
-use App\Http\Controllers\User\CustomerController;
-use App\Http\Controllers\User\EmployeeController;
-use App\Http\Controllers\User\TransactionController;
-use App\Http\Controllers\User\WarehouseController;
+use App\Http\Controllers\BusinessOwner\HomeController;
+use App\Http\Controllers\BusinessOwner\OrderController;
+use App\Http\Controllers\BusinessOwner\ReportController;
+use App\Http\Controllers\BusinessOwner\InvoiceController;
+use App\Http\Controllers\BusinessOwner\ProductController;
+use App\Http\Controllers\BusinessOwner\ProfileController;
+use App\Http\Controllers\BusinessOwner\SettingController;
+use App\Http\Controllers\BusinessOwner\BusinessController;
+use App\Http\Controllers\BusinessOwner\CustomerController;
+use App\Http\Controllers\BusinessOwner\EmployeeController;
+use App\Http\Controllers\BusinessOwner\TransactionController;
+use App\Http\Controllers\BusinessOwner\WarehouseController;
 
 Route::get('/', function () {
     return view('separate.user.pages.home.index');

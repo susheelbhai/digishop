@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -25,6 +25,6 @@
         </x-table.element.tbody>
 
     </x-table.type.responsive>
-    @livewire('user.order-list',['page' => 'customer', 'customer_id' => $data['id']])
+    @livewire('business-owner.order-list',['page' => 'customer', 'customer_id' => $data['id']])
 
-</x-layout.user.app>
+</x-layout.business-owner.app>

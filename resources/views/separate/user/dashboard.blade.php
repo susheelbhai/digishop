@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -29,7 +29,7 @@
     </div>
 
 
-    @livewire('user.order-list', ['page' => 'dashboard'])
+    @livewire('business-owner.order-list', ['page' => 'dashboard'])
 
     <script>
         const monthly_chart = document.getElementById('monthly_chart');
@@ -90,4 +90,4 @@
     </script>
 
 
-</x-layout.user.app>
+</x-layout.business-owner.app>

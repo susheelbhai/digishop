@@ -1,5 +1,5 @@
 
-<x-layout.user.guest>
+<x-layout.business-owner.guest>
 
     <x-slot name="head">
         <title> Authenticate {{ config('app.name') }}</title>
@@ -13,5 +13,5 @@
         
     </x-form.type.login>
 
-</x-layout.user.guest>
+</x-layout.business-owner.guest>
 

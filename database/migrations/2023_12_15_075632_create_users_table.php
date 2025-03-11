@@ -11,24 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->unique()->nullable();
-            $table->string('designation')->nullable();
-            $table->string('profile_pic')->nullable('dummy.png');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->foreignId('gender_id')->default(1)->references('id')->on('user_genders');
-            $table->foreignId('theme_id')->default(1)->references('id')->on('themes');
-            $table->foreignId('business_id')->default(11)->references('id')->on('businesses');
-            $table->string('color1')->default(1);
-            $table->string('color2')->default(1);
-            $table->string('color3')->default(1);
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

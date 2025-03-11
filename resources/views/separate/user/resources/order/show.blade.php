@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -16,7 +16,6 @@
                 <x-table.element.th data="GST" />
                 <x-table.element.th data="Quantity" />
                 <x-table.element.th data="Total" />
-                {{-- <x-table.element.th data="Action" /> --}}
             </x-table.element.tr>
         </x-table.element.thead>
 
@@ -26,7 +25,6 @@
             @endphp
             @forelse ($data['products'] as $key => $i)
                 <x-table.element.tr>
-                    {{-- <x-resources.invoice.index-td :data="$i" /> --}}
                     <x-table.element.td  data="{{ $key+1 }}" />
                     <x-table.element.td>
                         {{ $i['name'] }} <br>
@@ -48,7 +46,6 @@
             <x-table.element.tr>
                 <x-table.element.td colspan="5" data="Sub Total" />
                 <x-table.element.td colspan="1" data="{{ Helper::customMoneyFormat($total) }}" />
-                <x-table.element.td colspan="1" data="" />
             </x-table.element.tr>
         </x-table.element.tbody>
 
@@ -80,4 +77,4 @@
 
 
     
-</x-layout.user.app>
+</x-layout.business-owner.app>

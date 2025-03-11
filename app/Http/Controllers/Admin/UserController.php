@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\BusinessOwner;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::all();
+        $data = BusinessOwner::all();
         return view('admin.resources.user.index', compact('data'));
     }
 

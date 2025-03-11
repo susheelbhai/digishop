@@ -14,9 +14,9 @@ use Susheelbhai\Larapay\Models\Payment;
 class PdfService
 {
 
-  public function taxInvoice($payment_id, $copy)
+  public function taxInvoice($id, $copy)
   {
-     $invoice_detail = Order::where('id', $payment_id)
+     $invoice_detail = Order::where('id', $id)
      ->with('products', 'businessState', 'customerState', 'invoiceFormat')
      ->withSum('products', 'sale_price')
      ->firstOrFail();
@@ -25,28 +25,30 @@ class PdfService
     $payment_invoice = PDF::loadView('pdf.invoice.'.$invoice_detail['invoiceFormat']['slug'], ['data' => $invoice_detail, 'copy' => $copy]);
     $payment_invoice->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
     $this->applyWatermark($payment_invoice);
-    $path = 'business/invoice/'.Auth::guard('web')->user()->business_id;
+    $path = 'business/invoice/'.Auth::guard('business_owner')->user()->business_id;
     $invoice_name = $path.'/' . $invoice_detail['invoice_number'] . '_' . $copy . '.pdf';
+    return $payment_invoice->stream('invoice_'.$id.'_'.$copy.'.pdf');
     if (!file_exists('storage/'.$path)) {
       mkdir('storage/'.$path, 0777, true);
     }
+    $invoice_detail->addMedia($payment_invoice)->toMediaCollection('invoice');
     $invoice_save = $payment_invoice->save(public_path($invoice_name));
     if ($invoice_save) {
-      Order::where('id', $payment_id)->update(['invoice_'.$copy.'_name' => $invoice_name]);
+      Order::where('id', $id)->update(['invoice_'.$copy.'_name' => $invoice_name]);
     }
-    return $payment_invoice->stream('invoice_'.$payment_id.'_'.$copy.'.pdf');
+    return $payment_invoice->stream('invoice_'.$id.'_'.$copy.'.pdf');
   }
   public function paymentInvoice($payment_id, $copy)
   {
      $invoice_detail = Payment::where('id', $payment_id)->firstOrFail();
-     $business_id = Auth::guard('web')->user()->business_id;
+     $business_id = Auth::guard('business_owner')->user()->business_id;
         $data = Payment::where('id', $payment_id)->where('business_id', $business_id)->firstOrFail();
         $business_data = Business::where('id', $business_id)->firstOrFail();
     // return $business_data;
     $payment_invoice = PDF::loadView('pdf.invoice.payment_invoice', ['data' => $invoice_detail, 'business_data'=> $business_data,'copy' => $copy]);
     $payment_invoice->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
     $this->applyWatermark($payment_invoice);
-    $path = 'business/invoice/'.Auth::guard('web')->user()->business_id;
+    $path = 'business/invoice/'.Auth::guard('business_owner')->user()->business_id;
     $invoice_name = $payment_id.'_' . $copy . '.pdf';
     $invoice_full_path = $path.'/' . $invoice_name;
     // return $payment_invoice->stream($invoice_name);

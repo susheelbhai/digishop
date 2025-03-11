@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -23,4 +23,4 @@
             label="Amount in words" />
     </x-form.type.standard>
     
-</x-layout.user.app>
+</x-layout.business-owner.app>

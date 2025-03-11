@@ -16,9 +16,11 @@ class InvoiceToUser extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
-    public function __construct($data)
+    public $media_url;
+    public function __construct($data, $media_url)
     {
         $this->data = $data;
+        $this->media_url = $media_url;
         // dd($this->data['invoice_original_name']);
     }
 
@@ -49,7 +51,7 @@ class InvoiceToUser extends Mailable
     public function attachments(): array
     {
         return [
-            // Attachment::fromPath(asset($this->data['invoice_original_name']))
+            Attachment::fromUrl($this->media_url)
         ];
     }
 }

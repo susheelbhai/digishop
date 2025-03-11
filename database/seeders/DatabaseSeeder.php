@@ -17,26 +17,32 @@ class DatabaseSeeder extends Seeder
             $this->call(UserGenderSeeder::class);
             $this->call(ThemeSeeder::class);
             $this->call(AdminSeeder::class);
-            $this->call(PartnerSeeder::class);
+            // $this->call(PartnerSeeder::class);
             $this->call(StateSeeder::class);
             $this->call(InvoiceFormatSeeder::class);
             $this->call(InvoiceNumberFormatSeeder::class);
             $this->call(SubscriptionTypeSeeder::class);
-            $this->call(BusinessOnboardApplicationSeeder::class);
-            $this->call(BusinessSeeder::class);
-            $this->call(UserSeeder::class);
-            $this->call(BusinessEmployeeSeeder::class);
-            $this->call(BusinessUserSeeder::class);
-            $this->call(BusinessUserRelationSeeder::class);
-            $this->call(CustomerSeeder::class);
+            // $this->call(BusinessOnboardApplicationSeeder::class);
+            // $this->call(BusinessSeeder::class);
+            // $this->call(BusinessDataChangeSeeder::class);
+            // $this->call(BusinessEmployeeSeeder::class);
+            // $this->call(BusinessOwnerSeeder::class);
+            // $this->call(BusinessUserRelationSeeder::class);
+            // $this->call(CustomerSeeder::class);
             // $this->call(ProductSeeder::class);
-            $this->call(InvoiceSettingSeeder::class);
+            // $this->call(InventorySeeder::class);
+            // $this->call(InvoiceSettingSeeder::class);
             // $this->call(OrderSeeder::class);
             // $this->call(OrderProductSeeder::class);
             $this->call(TransactionTypeSeeder::class);
             // $this->call(PaymentSeeder::class);
             // $this->call(TransactionSeeder::class);
             $this->call(SettingSeeder::class);
+            // $this->call(TicketTypeSeeder::class);
+            // $this->call(TicketTitleSeeder::class);
+            // $this->call(TicketSeeder::class);
+            // $this->call(TicketProcessSeeder::class);
+            // $this->call(MediaSeeder::class);
         }
         else{
             $this->call(UserGenderSeeder::class);
@@ -49,12 +55,13 @@ class DatabaseSeeder extends Seeder
             $this->call(SubscriptionTypeSeeder::class);
             $this->call(BusinessOnboardApplicationSeeder::class);
             $this->call(BusinessSeeder::class);
-            $this->call(UserSeeder::class);
+            $this->call(BusinessDataChangeSeeder::class);
             $this->call(BusinessEmployeeSeeder::class);
-            $this->call(BusinessUserSeeder::class);
+            $this->call(BusinessOwnerSeeder::class);
             $this->call(BusinessUserRelationSeeder::class);
             $this->call(CustomerSeeder::class);
             $this->call(ProductSeeder::class);
+            $this->call(InventorySeeder::class);
             $this->call(InvoiceSettingSeeder::class);
             $this->call(OrderSeeder::class);
             $this->call(OrderProductSeeder::class);
@@ -62,6 +69,11 @@ class DatabaseSeeder extends Seeder
             $this->call(PaymentSeeder::class);
             $this->call(TransactionSeeder::class);
             $this->call(SettingSeeder::class);
+            $this->call(TicketTypeSeeder::class);
+            $this->call(TicketTitleSeeder::class);
+            $this->call(TicketSeeder::class);
+            $this->call(TicketProcessSeeder::class);
+            $this->call(MediaSeeder::class);
         }
 
         

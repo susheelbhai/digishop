@@ -27,12 +27,20 @@
 
     --color-primary: var(--primary);
     --color-primary-foreground: var(--primary-foreground);
+    --color-primary-light: var(--primary-light);
+    --color-primary-light-foreground: var(--primary-light-foreground);
 
     --color-secondary: var(--secondary);
     --color-secondary-foreground: var(--secondary-foreground);
 
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
+
+    --color-danger: var(--danger);
+    --color-danger-foreground: var(--danger-foreground);
+
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
 
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
@@ -88,14 +96,19 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
+
     --primary: #0313AC;
     --primary-foreground: #fff;
+    --primary-light: #e7edfb;
+    --primary-light-foreground: #0313AC;
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
     --success: green;
-    --success-foreground: oklch(0.205 0 0);
+    --success-foreground: #fff;
     --danger: red;
-    --danger-foreground: oklch(0.205 0 0);
+    --danger-foreground: #fff;
+    --warning: rgb(243, 226, 115);
+    --warning-foreground: #000;
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
     --accent: oklch(0.97 0 0);

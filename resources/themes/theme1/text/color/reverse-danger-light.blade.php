@@ -1,3 +1,3 @@
-<div {{ $attributes->merge(['class' => 'text-reverse-danger-light']) }} >
+<div {{ $attributes->merge(['class' => 'text-danger-light-foreground']) }} >
         {{ $slot }}
 </div>

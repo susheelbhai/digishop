@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\ApplicationReceivedToPartner;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendApplicationReceivedNotification
+class SendApplicationReceivedNotification implements ShouldQueue
 {
     /**
      * Create the event listener.

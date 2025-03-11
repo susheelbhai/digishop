@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\BusinessOwner;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -14,6 +14,6 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         include('data/data.php');
-        User::insert($users);
+        BusinessOwner::insert($users);
     }
 }

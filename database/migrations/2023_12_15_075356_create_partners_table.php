@@ -23,9 +23,6 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('gender_id')->default(1)->references('id')->on('user_genders');
             $table->foreignId('theme_id')->default(1)->references('id')->on('themes');
-            $table->string('color1')->default(1);
-            $table->string('color2')->default(1);
-            $table->string('color3')->default(1);
             $table->rememberToken();
         });
     }

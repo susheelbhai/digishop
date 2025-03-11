@@ -13,6 +13,7 @@ use App\Events\OrderCreated;
 use App\Models\OrderProduct;
 use App\Models\InvoiceSetting;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class CreateOrderAction
 {
@@ -93,14 +94,17 @@ class CreateOrderAction
             Order::find($order->id)->update([
                 'invoice_number' => Helper::invoiceNumber($order, $invoice_number_format)
             ]);
+            $ip_address = Request::ip();
             Transaction::updateOrCreate(
                 ['order_id' => $order->id],
                 [
                     'transaction_type_id' => 1,
                     'business_id' => $this->business_id,
                     'amount' => -1,
+                    'ip_address' => $ip_address,
                 ]
             );
+            // dd($ip_address);
             event(new OrderCreated($order->id));
             DB::commit();
             return $order;

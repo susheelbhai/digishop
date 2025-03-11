@@ -1,4 +1,4 @@
-<x-layout.user.guest>
+<x-layout.business-owner.guest>
 
     <x-slot name="head">
         <meta name="description" content="">
@@ -16,4 +16,4 @@
     </x-form.type.login>
 
 
-</x-layout.user.guest>
+</x-layout.business-owner.guest>

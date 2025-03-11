@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -39,4 +39,4 @@
             </x-table.type.paginate>
 
     </section>
-</x-layout.user.app>
+</x-layout.business-owner.app>

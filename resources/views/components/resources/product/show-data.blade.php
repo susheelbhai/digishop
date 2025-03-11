@@ -22,11 +22,11 @@
     <x-table.element.th data="Sale Price" />
     <x-table.element.td :data="$data2['sale_price']" />
 </x-table.element.tr>
-<x-table.element.tr>
+{{-- <x-table.element.tr>
     <x-table.element.th data="Purchase Price" />
     <x-table.element.td :data="$data2['purchase_price']" />
 </x-table.element.tr>
 <x-table.element.tr>
     <x-table.element.th data="Quantity" />
     <x-table.element.td :data="$data2['quantity']" />
-</x-table.element.tr>
+</x-table.element.tr> --}}

@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -11,4 +11,4 @@
         <x-form.element.input1 name="start_number" label="Start Number" required="required" />
         <x-form.element.input1 name="last_number" label="Last Number" required="required" />
     </x-form.type.standard>
-</x-layout.user.app>
+</x-layout.business-owner.app>

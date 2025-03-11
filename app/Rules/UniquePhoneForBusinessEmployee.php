@@ -21,7 +21,7 @@ class UniquePhoneForBusinessEmployee implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $business_id = Auth::guard('web')->user()->business_id;
+        $business_id = Auth::guard('business_owner')->user()->business_id;
         $find_phone = BusinessEmployee::where('business_id', $business_id)->where('phone', Helper::cleanPhone($value))->count();
         if ($this->id != '') {
             $find_phone = BusinessEmployee::where('business_id', $business_id)->where('id', '!=', $this->id)->where('phone', Helper::cleanPhone($value))->count();

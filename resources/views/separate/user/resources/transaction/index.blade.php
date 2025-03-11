@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -14,14 +14,6 @@
         } else {
             $balance_card = 'success';
         }
-        $color = [
-            'light', 'dark', 
-            'primary', 'primary-light', 
-            'secondary', 'secondary-light', 
-            'success', 'success-light', 
-            'warning', 'warning-light', 
-            'danger', 'danger-light', 
-        ]
     @endphp
 
     
@@ -133,4 +125,4 @@
     </x-table.type.responsive>
 
 
-</x-layout.user.app>
+</x-layout.business-owner.app>

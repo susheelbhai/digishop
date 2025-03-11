@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\ApplicationApprovedToPartner;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendApplicationApprovedNotification
+class SendApplicationApprovedNotification implements ShouldQueue
 {
     /**
      * Create the event listener.

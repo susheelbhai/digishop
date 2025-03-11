@@ -14,7 +14,7 @@ class App extends Component
 {
     public function __construct()
     {
-        $user = Auth::guard('web')->user();
+        $user = Auth::guard('business_owner')->user();
         $setting = Setting::find(1);
         $theme = 'user1';
         $user = [

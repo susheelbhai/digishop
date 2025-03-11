@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <title> Create Employee | {{ config('app.name') }}</title>
     </x-slot>
@@ -13,4 +13,4 @@
             <x-form.element.input1 name="state_id" label="State" type="select" :options="$states" required="required" />
         
     </x-form.type.standard>
-</x-layout.user.app>
+</x-layout.business-owner.app>

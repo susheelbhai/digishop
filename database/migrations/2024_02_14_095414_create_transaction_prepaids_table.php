@@ -19,7 +19,6 @@ return new class extends Migration
             // $table->foreignId('payment_id')->nullable()->references('id')->on('payments');
             $table->double('amount', 8, 2)->default(0);
             $table->ipAddress('ip_address')->nullable();
-            $table->macAddress('mac_address')->nullable();
             $table->string('remark')->nullable();
         });
     }

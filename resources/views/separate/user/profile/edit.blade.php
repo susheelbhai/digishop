@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <title> Edit Profile  | {{ config('app.name') }}</title>
     </x-slot>
@@ -16,4 +16,4 @@
 
     
 
-</x-layout.user.app>
+</x-layout.business-owner.app>

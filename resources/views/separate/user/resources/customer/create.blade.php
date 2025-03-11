@@ -1,4 +1,4 @@
-<x-layout.user.app>
+<x-layout.business-owner.app>
     <x-slot name="head">
         <title> Create Customer | {{ config('app.name') }}</title>
     </x-slot>
@@ -14,4 +14,4 @@
             <x-form.element.input1 name="gstin" label="GSTIN" />
         
     </x-form.type.standard>
-</x-layout.user.app>
+</x-layout.business-owner.app>

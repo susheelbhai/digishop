@@ -1,4 +1,4 @@
-@livewire('user.switch_business')
+@livewire('business-owner.switch_business')
 <x-layout.sidebar.li1 name="Home" href="{{ route('dashboard') }}" icon="fas fa-tv" />
 <x-layout.sidebar.li1 name="Business Detail" href="{{ route('business.index') }}" icon="fa fa-city" />
 <x-layout.sidebar.li2 name=" Setting" icon="fa fa-cog">
