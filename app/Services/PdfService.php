@@ -38,6 +38,7 @@ class PdfService
     }
     return $payment_invoice->stream('invoice_'.$id.'_'.$copy.'.pdf');
   }
+  
   public function paymentInvoice($payment_id, $copy)
   {
      $invoice_detail = Payment::where('id', $payment_id)->firstOrFail();
@@ -64,7 +65,7 @@ class PdfService
 
   private function applyWatermark($data)
   {
-    if (config('app.env') == 'local') {
+    if (config('app.env') != 'production') {
       $data->output();
       $id_front_wm = $data->getDomPDF()->getCanvas();
       $height = $id_front_wm->get_height();

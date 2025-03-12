@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('business_order_id')->nullable();
             $table->string('invoice_number')->nullable();
+            $table->string('invoice_key')->nullable();
             $table->date('invoice_date')->nullable();
             $table->foreignId('business_id')->references('id')->on('businesses');
             $table->foreignId('invoice_format_id')->default(1)->references('id')->on('invoice_formats');

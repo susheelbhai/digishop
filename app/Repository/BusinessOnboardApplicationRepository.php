@@ -21,7 +21,6 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
 {
     public function store($request)
     {
-        // dd($request);
         $logo = '';
         $registration_certificate = '';
         $gst_certificate = '';
@@ -224,12 +223,24 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                         'business_id' => $business['id'],
                     ]
                 );
-                $business->addMediaFromDisk($data->logo, 'local')->preservingOriginal()->toMediaCollection('logo');
-                $business->addMediaFromDisk($data->gst_certificate, 'local')->preservingOriginal()->toMediaCollection('gst_certificate');
-                $business->addMediaFromDisk($data->registration_certificate, 'local')->preservingOriginal()->toMediaCollection('registration_certificate');
-                $business->addMediaFromDisk($data->authorised_sign, 'local')->preservingOriginal()->toMediaCollection('authorised_sign');
-                $business->addMediaFromDisk($data->authorised_stamp, 'local')->preservingOriginal()->toMediaCollection('authorised_stamp');
-                $business->addMediaFromDisk($data->owner_photo, 'local')->preservingOriginal()->toMediaCollection('owner_photo');
+                if (file_exists(asset($data->logo))) {
+                    $business->addMediaFromDisk($data->logo, 'local')->preservingOriginal()->toMediaCollection('logo');
+                }
+                if (file_exists(asset($data->gst_certificate))) {
+                    $business->addMediaFromDisk($data->gst_certificate, 'local')->preservingOriginal()->toMediaCollection('gst_certificate');
+                }
+                if (file_exists(asset($data->registration_certificate))) {
+                    $business->addMediaFromDisk($data->registration_certificate, 'local')->preservingOriginal()->toMediaCollection('registration_certificate');
+                }
+                if (file_exists(asset($data->authorised_sign))) {
+                    $business->addMediaFromDisk($data->authorised_sign, 'local')->preservingOriginal()->toMediaCollection('authorised_sign');
+                }
+                if (file_exists(asset($data->authorised_stamp))) {
+                    $business->addMediaFromDisk($data->authorised_stamp, 'local')->preservingOriginal()->toMediaCollection('authorised_stamp');
+                }
+                if (file_exists(asset($data->owner_photo))) {
+                    $business->addMediaFromDisk($data->owner_photo, 'local')->preservingOriginal()->toMediaCollection('owner_photo');
+                }
                 // dd($data);
                 ApplicationApproved::dispatch($data, $user_password);
                 $data->update(['approved_at' => now()]);

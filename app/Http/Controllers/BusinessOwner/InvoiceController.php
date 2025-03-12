@@ -7,6 +7,7 @@ use App\Models\InvoiceFormat;
 use App\Models\InvoiceSetting;
 use App\Models\InvoiceNumberFormat;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Facades\GeneratePDF;
 
@@ -14,7 +15,15 @@ class InvoiceController extends Controller
 {
     public function generate(string $id, string $copy = 'original')
     {
+        Order::whereId($id)
+        ->whereBusinessId(Auth::user()->business_id)
+        ->firstOrFail();
         return GeneratePDF::taxInvoice($id, $copy);
+    }
+    public function show(string $id, string $invoice_key = 'original')
+    {
+        Order::whereId($id)->whereInvoiceKey($invoice_key)->firstOrFail();
+        return GeneratePDF::taxInvoice($id, 'original');
     }
     public function setting()
     {
@@ -57,7 +66,7 @@ class InvoiceController extends Controller
             $amount_in_words = 1;
         }
         $business_id = Auth::guard('business_owner')->user()->business_id;
-        $data = InvoiceSetting::updateOrCreate(
+        InvoiceSetting::updateOrCreate(
             ['business_id' => $business_id],
             [
                 'pan' =>$pan,

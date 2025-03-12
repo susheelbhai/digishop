@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Inventory;
 use App\Models\Transaction;
+use Illuminate\Support\Str;
 use App\Events\OrderCreated;
 use App\Models\OrderProduct;
 use App\Models\InvoiceSetting;
@@ -30,13 +31,15 @@ class CreateOrderAction
         $invoice_number_format = $invoice_setting['invoiceNumberFormat']['slug'];
         $business_order_id = $this->calculateBusinessOrderId();
         $customer = $this->updateCustomer($customer_detail);
-
+        $invoice_key = Str::random();
+        // dd($invoice_key);
         DB::beginTransaction();
         try {
             $order = Order::create(
                 [
                     'business_id' => $this->business_id,
                     'business_order_id' => $business_order_id,
+                    'invoice_key' => $invoice_key,
                     'invoice_format_id' => $invoice_setting['invoice_format_id'],
                     'invoice_date' => Carbon::now(),
                     'customer_id' => $customer['id'],

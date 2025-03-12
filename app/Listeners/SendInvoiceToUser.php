@@ -32,10 +32,10 @@ class SendInvoiceToUser implements ShouldQueue
         // dd($invoice);
         $data = [
             'phone' => $customer_phone,
-            'message' => 'Thank you for shopping, Please download the invoice',
-            'media_url' => $invoice
+            'message' => 'Thank you for shopping, You can download the invoice using the following url '.route('invoice.show', ['id' => $event->data['id'], 'invoice_key' =>$event->data['invoice_key'] ]),
+            // 'media_url' => $invoice
         ];
-        WhatsApp::sendMedia($data);
+        WhatsApp::sendText($data);
         // dd($invoice);
         if ($event->data->customer_email != null || $event->data->customer_email != '') {
             Mail::send(new InvoiceToUser($event->data, $invoice));
