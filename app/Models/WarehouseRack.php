@@ -16,7 +16,7 @@ class WarehouseRack extends Model
     }
 
     
-    public function products(){
+    public function inventories(){
         return $this->hasMany(Inventory::class);
     }
 }

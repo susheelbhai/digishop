@@ -78,8 +78,6 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'mrp' => $request->mrp,
                 'sale_price' => $request->sale_price,
-                'purchase_price' => $request->purchase_price,
-                'quantity' => $request->quantity,
             ]
         );
         return redirect()->route('product.index')->with('success', 'Product data updated successfully');

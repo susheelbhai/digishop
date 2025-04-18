@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('sale_price')->nullable();
             $table->integer('quantity')->nullable();
+            $table->string('unit')->nullable();
             $table->string('gst_percentage');
         });
     }

@@ -7,8 +7,6 @@ use App\Models\Product;
 use Livewire\Component;
 use App\Models\Business;
 use App\Models\Customer;
-use App\Models\Inventory;
-use App\Models\SettingProduct;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Action\Order\CreateOrderAction;
@@ -21,11 +19,11 @@ class CreateOrder extends Component
 {
     public $business_id;
     public $sku;
-    public $availability;
+    public $available_quantity;
     public $discountPercentage;
     public $discountAmount;
     public $warehouses;
-    public $productLocation;
+    public $warehouse;
     public $productRack;
     public $racks = [];
     public $mrp;
@@ -39,10 +37,21 @@ class CreateOrder extends Component
     public $customer_detail = [];
     public $business_detail;
     public $quantity = 1;
+    public $unit = '';
     public $gstPercentage = 18;
     public $user_session;
     public $error_msg = '';
     public $product_error_msg = '';
+
+
+    protected $rules = [
+        'sku' => 'required|min:4',
+        'warehouse' => 'required',
+        'productRack' => 'required',
+        'quantity' => 'required|numeric|gt:0|lte:available_quantity',
+        'salePrice' => 'required|numeric|gt:0|lte:mrp',
+        'product.gst_percentage' => 'required|numeric',
+    ];
 
     function mount()
     {
@@ -54,7 +63,7 @@ class CreateOrder extends Component
         $this->business_detail = Business::whereId($this->business_id)->first();
         $this->warehouses = Warehouse::whereBusinessId($this->business_id)->get();
 
-        $this->availability = 1;
+        $this->available_quantity = 0;
     }
 
     public function render()
@@ -65,8 +74,7 @@ class CreateOrder extends Component
     public function updatedSku($a)
     {
         $this->sku = $a;
-        $product = Product::where('sku', $a)->where('business_id', $this->business_id)->first();
-        // dd($product);
+        $product = Product::where('sku', $a)->where('business_id', $this->business_id)->latest()->first();
         $this->product['name'] = $product['name'] ?? '';
         $this->product['sku'] = $a ?? '';
         $this->product['description'] = $product['description'] ?? '';
@@ -77,24 +85,61 @@ class CreateOrder extends Component
         $this->product['gst_percentage'] = $product['gst_percentage'] ?? '';
         $this->product['hsn_code'] = $product['hsn_code'] ?? '';
         $this->product['id'] = $product['id'] ?? '';
+        $this->updatedWarehouse($this->warehouse);
         Session::put('user', $this->user_session);
     }
-    public function updatedProductLocation($a)
+    public function updatedWarehouse($a)
     {
-        $this->racks = Inventory::leftJoin('warehouse_racks',  'inventories.warehouse_rack_id', 'warehouse_racks.id')
-        // ->leftJoin('warehouse',  'warehouse_racks.warehouse_id', 'warehouse.id')
-        ->where('warehouse_racks.warehouse_id', $a)
-        ->where('inventories.product_id', $this->product['id'])
-        ->with('product', 'warehouseRack')
-        ->select(['product_id', 'warehouse_rack_id as id', 'warehouse_racks.name', DB::raw("SUM(quantity) as quantity")])
-        ->groupBy('product_id', 'warehouse_rack_id', 'warehouse_racks.name')
-        ->get();
+        $this->racks = WarehouseRack::where('warehouse_id', $a)
+            ->whereHas('warehouse', function ($query) {
+                $query->where('business_id', $this->business_id);
+            })
+            ->whereHas('inventories', function ($query) {
+                $query->where('product_id', $this->product['id']);
+            })
+            ->withSum(['inventories as inventories_sum_quantity' => function ($query) {
+                $query->where('product_id', $this->product['id']); // Sum only for the specific product_id
+            }], 'quantity')
+            ->having('inventories_sum_quantity', '>', 0)
+            ->get();
+        $this->available_quantity = 0;
+        $this->productRack = null;
+
         Session::put('user', $this->user_session);
     }
     public function updatedProductRack($a)
     {
+        
+        $rack = WarehouseRack::where('id', $a)
+        ->whereHas('warehouse', function ($query) {
+            $query->where('business_id', $this->business_id);
+        })
+        ->whereHas('inventories', function ($query) {
+            $query->where('product_id', $this->product['id']); // Ensure filtering by product_id
+        })
+        ->with(['inventories' => function ($query) {
+            $query->where('product_id', $this->product['id']); // Filter inventories by product_id in the relationship
+        }])
+        ->withSum(['inventories as inventories_sum_quantity' => function ($query) {
+            $query->where('product_id', $this->product['id']); // Sum only for the specific product_id
+        }], 'quantity')
+        ->first();
+            // dd($rack);
+            $key = "id"; // The key to check for
+            $added_quantity = 0;
+            // $result = array_filter($this->added_products, function ($subArray) use ($key) {
+            //     return isset($subArray[$key]) && $subArray[$key] == $this->product['id'];
+            // });
+            // $result = array_values($result);
+
+            // if (count($result) >= 1) {
+            // $added_quantity = $result[0]['quantity'];
+            // # code...
+            // }
+
+            // array_filter returns an array, so you may need to reindex it
+        $this->available_quantity = $rack->inventories_sum_quantity -  $added_quantity;
         $this->product['rack_id'] = $a;
-        // dd($a);
 
         Session::put('user', $this->user_session);
     }
@@ -110,13 +155,15 @@ class CreateOrder extends Component
     {
         $this->discountAmount = $this->trimZero($a);
         $this->salePrice = ($this->mrp ?? 0) - $a;
-        // dd($this->salePrice);
         $this->discountPercentage = 100 - 100 * ($this->salePrice / $this->mrp);
 
         Session::put('user', $this->user_session);
     }
     public function updatedSalePrice($a)
     {
+        if ($a == '') {
+            $a = 0;
+        }
         $this->salePrice = $this->trimZero($a);
         $this->discountAmount = ($this->mrp ?? 0) - ($a ?? 0);
         $this->discountPercentage = 100 * (1 - ($this->salePrice ?? 0) / ($this->mrp ?? 1));
@@ -148,71 +195,12 @@ class CreateOrder extends Component
 
     public function addProduct()
     {
-
-
-        $err = 0;
-
-        if ($this->product['name'] == '') {
-            $this->product_error_msg = "Please enter product name";
-            $err++;
-        } elseif ($this->product['description'] == '') {
-            $this->product_error_msg = "Please enter description name";
-            $err++;
-        } elseif ($this->mrp == 0) {
-            $this->product_error_msg = "Please enter MRP";
-            $err++;
-        } elseif ($this->salePrice == 0) {
-            $this->product_error_msg = "Please enter sale_price";
-            $err++;
-        } elseif ($this->product['gst_percentage'] == 0) {
-            $this->product_error_msg = "Please enter gst_percentage";
-            $err++;
-        } elseif ($this->product['hsn_code'] == '') {
-            $this->product_error_msg = "Please enter hsn_code";
-            $err++;
-        } else {
-            $this->product_error_msg = "";
-        }
-        if ($err == 0) {
-            DB::beginTransaction();
+        $customAttributes = [
+            'product.gst_percentage' => 'Gst Percentage',
+        ];
+        $this->validate($this->rules, [], $customAttributes); // Use the custom attribute mapping here
+        DB::beginTransaction();
             try {
-                $settings = SettingProduct::whereBusinessId($this->business_detail['id'])->firstOrCreate();
-                // dd($settings->add_product_while_order);
-                $product = Product::where([
-                    'sku' => $this->sku,
-                    'business_id' => $this->business_detail['id'],
-                    'mrp' => $this->mrp,
-                ])->first();
-                // dd($this->product);
-                $available_data = Product::where('sku', $this->sku)
-                    ->withSum('inventory', 'quantity')
-                    ->latest()->get();
-                // dd($available_data);
-                if ($product == null) {
-
-                    $product = Product::updateOrCreate(
-                        [
-                            'sku' => $this->sku,
-                            'business_id' => $this->business_detail['id'],
-                            'mrp' => $this->mrp,
-                        ],
-                        [
-                            'name' => $this->product['name'],
-                            'description' => $this->product['description'],
-                            'hsn_code' => $this->product['hsn_code'],
-                            'sale_price' => $this->salePrice,
-                            'gst_percentage' => $this->product['gst_percentage'],
-                        ]
-                    );
-                    $this->product['id'] = $product['id'];
-                    $inv = new Inventory();
-                    $inv->business_id = $this->business_detail['id'];
-                    $inv->product_id = $product['id'];
-                    $inv->warehouse_rack_id = $product['rack_id'];
-                    $inv->quantity = $this->quantity;
-                    $inv->purchase_price = $this->salePrice;
-                    $inv->save();
-                }
                 $array = $this->added_products;
                 $key = "sku"; // The key to check for
 
@@ -234,6 +222,7 @@ class CreateOrder extends Component
                         'sale_price' => $this->salePrice,
                         'hsn_code' => $this->product['hsn_code'],
                         'quantity' => $this->quantity,
+                        'unit' => $this->unit,
                         'gst_percentage' => $this->product['gst_percentage'],
                     ];
                     array_push($this->added_products, $new);
@@ -253,22 +242,20 @@ class CreateOrder extends Component
                 }
 
                 $this->sku = '';
-                $this->product['name'] = '';
-                $this->product['description'] = '';
                 $this->mrp = 0;
                 $this->salePrice = 0;
                 $this->discountPercentage = 0;
                 $this->discountAmount = 0;
-                $this->product['gst_percentage'] = 0;
-                $this->product['hsn_code'] = '';
+                $this->unit = '';
+                $this->product = null;
+                $this->available_quantity = 0;
+
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();
                 $this->product_error_msg = "Please provide product detail";
                 throw $th;
             }
-        }
-
         Session::put('user', $this->user_session);
     }
 
@@ -281,7 +268,7 @@ class CreateOrder extends Component
     public function submit()
     {
         $product_count = count($this->added_products);
-        
+
         if ($product_count == 0) {
             $this->error_msg = "Please select at least 1 product";
         } elseif ($this->customer_detail == null) {

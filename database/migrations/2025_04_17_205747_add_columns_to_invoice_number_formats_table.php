@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('page_privacy', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->longText('content');
+        Schema::table('invoice_number_formats', function (Blueprint $table) {
+            
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('page_privacy');
+        Schema::table('invoice_number_formats', function (Blueprint $table) {
+            //
+        });
     }
 };

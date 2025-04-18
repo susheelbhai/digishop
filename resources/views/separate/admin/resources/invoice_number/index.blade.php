@@ -4,14 +4,22 @@
     </x-slot>
 
     <x-form.element.button1 :href="route('admin.invoiceNumber.create')" title="Add New" type="add" div="4" />
-    <x-grid.type.standard>
+    <div class="grid grid-cols-4 gap-4">
         @foreach ($data as $i)
-            <x-card.type.standard div="4">
+            <x-card.type.standard>
                 <x-card.element.header>
-                    {{ $i['name'] }}
-                    <a href="{{ route('admin.invoiceNumber.edit', $i['id']) }}">
-                        edit
-                    </a>
+                    <div class="grid grid-cols-2">
+                        <h3>{{ $i['name'] }}</h3>
+                        
+                    </div>
+                    <x-slot name="right_item">
+                        <div class="bg-yellow-500">
+                            <a class="text-right" href="{{ route('admin.invoiceNumber.edit', $i['id']) }}">
+                                edit
+                            </a>
+                        </div>
+                    </x-slot>
+                    
                 </x-card.element.header>
                 <x-card.element.body>
                     Sample 1 : {{ $i['sample1'] }} <br>
@@ -20,6 +28,6 @@
                 </x-card.element.body>
             </x-card.type.standard>
         @endforeach
-    </x-grid.type.standard>
+    </div>
 
 </x-layout.admin.app>

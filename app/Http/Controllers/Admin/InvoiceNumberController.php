@@ -14,6 +14,7 @@ class InvoiceNumberController extends Controller
     public function index()
     {
         $data = InvoiceNumberFormat::all();
+        // $this->updateInvoiceSample($data);
         return view('admin.resources.invoice_number.index', compact('data'));
     }
 
@@ -33,9 +34,18 @@ class InvoiceNumberController extends Controller
         $obj = new InvoiceNumberFormat();
         $obj->name = $request->name;
         $obj->slug = $request->slug;
+        $obj->state_code = $request->state_code;
+        $obj->state_code_suffix = $request->state_code_suffix;
+        $obj->financial_year = $request->financial_year;
+        $obj->financial_year_hint = $request->financial_year_hint;
+        $obj->financial_year_interfix = $request->financial_year_interfix;
+        $obj->financial_year_suffix = $request->financial_year_suffix;
+        $obj->business_order_id_digit = $request->business_order_id_digit;
+
         $obj->sample1 = $request->sample1;
         $obj->sample2 = $request->sample2;
         $obj->sample3 = $request->sample3;
+
         $obj->save();
         return redirect()->route('admin.invoiceNumber.index')->with('success', 'Invoice Number Format submitted successfully');
     }
@@ -43,10 +53,7 @@ class InvoiceNumberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        
-    }
+    public function show(string $id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -65,6 +72,14 @@ class InvoiceNumberController extends Controller
         $obj = InvoiceNumberFormat::find($id);
         $obj->name = $request->name;
         $obj->slug = $request->slug;
+        $obj->state_code = $request->state_code;
+        $obj->state_code_suffix = $request->state_code_suffix;
+        $obj->financial_year = $request->financial_year;
+        $obj->financial_year_hint = $request->financial_year_hint;
+        $obj->financial_year_interfix = $request->financial_year_interfix;
+        $obj->financial_year_suffix = $request->financial_year_suffix;
+        $obj->business_order_id_digit = $request->business_order_id_digit;
+
         $obj->sample1 = $request->sample1;
         $obj->sample2 = $request->sample2;
         $obj->sample3 = $request->sample3;
@@ -79,4 +94,39 @@ class InvoiceNumberController extends Controller
     {
         //
     }
+
+    public function updateInvoiceSample($data)
+    {
+
+        foreach ($data as $key => $invoicer_format) {
+            $number = '';
+            if ($invoicer_format['state_code'] == 1) {
+                $number .= "BR"
+                    . $invoicer_format['state_code_suffix'];
+            }
+            if ($invoicer_format['financial_year'] == 1) {
+                $number .= "25" . $invoicer_format['financial_year_interfix'] . "26"
+                    . $invoicer_format['financial_year_suffix'];
+            }
+            if ($invoicer_format['financial_year'] == 2) {
+                $number .= "2025" . $invoicer_format['financial_year_interfix'] . "26"
+                    . $invoicer_format['financial_year_suffix'];
+            }
+            if ($invoicer_format['financial_year'] == 3) {
+                $number .= "2025" . $invoicer_format['financial_year_interfix'] . "2026"
+                    . $invoicer_format['financial_year_suffix'];
+            }
+            $sample1 = $number . str_pad(1, $invoicer_format['business_order_id_digit'], '0', STR_PAD_LEFT);
+            $sample2 = $number . str_pad(2, $invoicer_format['business_order_id_digit'], '0', STR_PAD_LEFT);
+            $sample3 = $number . str_pad(3, $invoicer_format['business_order_id_digit'], '0', STR_PAD_LEFT);
+            $invoicer_format->update([
+                'sample1' => $sample1,
+                'sample2' => $sample2,
+                'sample3' => $sample3,
+                'name' => "Sample " . $key+1
+            ]);
+        }
+        return $data;
+    }
 }
+

@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $type = 1;
+        $type = 2;
         if($type == 1){
             $this->call(UserGenderSeeder::class);
             $this->call(ThemeSeeder::class);
@@ -61,10 +61,13 @@ class DatabaseSeeder extends Seeder
             $this->call(BusinessUserRelationSeeder::class);
             $this->call(CustomerSeeder::class);
             $this->call(ProductSeeder::class);
-            $this->call(InventorySeeder::class);
+            $this->call(SettingProductSeeder::class);
             $this->call(InvoiceSettingSeeder::class);
             $this->call(OrderSeeder::class);
             $this->call(OrderProductSeeder::class);
+            $this->call(WarehouseSeeder::class);
+            $this->call(WarehouseRackSeeder::class);
+            $this->call(InventorySeeder::class);
             $this->call(TransactionTypeSeeder::class);
             $this->call(PaymentSeeder::class);
             $this->call(TransactionSeeder::class);
@@ -74,6 +77,7 @@ class DatabaseSeeder extends Seeder
             $this->call(TicketSeeder::class);
             $this->call(TicketProcessSeeder::class);
             $this->call(MediaSeeder::class);
+            $this->call(SessionSeeder::class);
         }
 
         

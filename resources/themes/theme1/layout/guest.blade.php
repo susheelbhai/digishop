@@ -36,7 +36,19 @@
             </div>
         </div>
     </div>
-
+    @if (config('app.watermark') == 1)
+    <script>
+        var textWatermark = 'Testing';
+        var body = document.getElementsByTagName('body')[0];
+        var header = document.getElementsByTagName('nav')[0];
+        var background =
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='48px' width='80px' >" +
+            "<text transform='translate(20, 48) rotate(-30)' fill='rgba(255,128,128, 0.2)' font-size='20' >" +
+            textWatermark + "</text></svg>\")";
+        body.style.backgroundImage = background
+        header.style.backgroundImage = background
+    </script>
+@endif
 
 </body>
 

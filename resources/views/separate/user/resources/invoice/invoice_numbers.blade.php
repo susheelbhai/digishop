@@ -20,9 +20,11 @@
                 </x-card.element.body>
                 <x-card.element.footer>
                     @if ($data['invoice_number_format_id'] == $i->id)
-                    <div class="text-success">Default</div>
+                    <div class="text-right">
+                        <span class="shadow-xl bg-success text-primary-foreground px-3 py-1">Default</span>
+                    </div>
                     @else
-                        <a href="{{ route('invoice_number.format.setDefault', $i['id']) }}">
+                        <a class="text-xl font-bold" href="{{ route('invoice_number.format.setDefault', $i['id']) }}">
                             Make as default
                         </a>
                     @endif

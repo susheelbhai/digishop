@@ -37,6 +37,73 @@
 
     <x-grid.type.standard>
 
+        @if (count($added_products) > 0)
+            <x-ui.button.small title="Generate Invoice" type="submit" wire:click="submit" />
+
+
+            <x-table.type.responsive title="Added Product">
+
+                <x-table.element.thead>
+                    <x-table.element.tr>
+                        {{-- <x-resources.invoice.index-th /> --}}
+                        <x-table.element.th data="Serial No." />
+                        <x-table.element.th data="SKU" />
+                        <x-table.element.th data="Description" />
+                        <x-table.element.th data="Price" />
+                        <x-table.element.th data="GST" />
+                        <x-table.element.th data="Quantity" />
+                        <x-table.element.th data="Unit" />
+                        <x-table.element.th data="Total" />
+                        <x-table.element.th data="Action" />
+                    </x-table.element.tr>
+                </x-table.element.thead>
+
+                <x-table.element.tbody>
+                    @php
+                        $total = 0;
+                    @endphp
+                    @forelse ($added_products as $key => $i)
+                        <x-table.element.tr>
+                            {{-- <x-resources.invoice.index-td :data="$i" /> --}}
+                            <x-table.element.td data="{{ $key + 1 }}" />
+                            <x-table.element.td :data="$i['sku']" />
+                            <x-table.element.td>
+                                {{ $i['name'] }} <br>
+                                {{ $i['description'] }}
+                            </x-table.element.td>
+                            <x-table.element.td
+                                data="{{ Helper::customMoneyFormat($i['sale_price'] / (1 + 0.01 * $i['gst_percentage'])) }}" />
+                            <x-table.element.td
+                                data="{{ Helper::customMoneyFormat($i['sale_price'] - $i['sale_price'] / (1 + 0.01 * $i['gst_percentage'])) }}" />
+                            <x-table.element.td data="{{ $i['quantity'] }}" />
+                            <x-table.element.td data="{{ $i['unit'] }}" />
+                            <x-table.element.td data="{{ $i['sale_price'] * $i['quantity'] }}" />
+                            <x-table.element.td>
+                                <span wire:click=removeProduct({{ $key }})>
+                                    <i class="fas fa-window-close"></i>
+                                </span>
+                            </x-table.element.td>
+                        </x-table.element.tr>
+                        @php
+                            $total += $i['sale_price'] * $i['quantity'];
+                        @endphp
+                    @empty
+                        <x-table.element.tr>
+                            <x-table.element.td colspan="9" data="No Data Found" />
+                        </x-table.element.tr>
+                    @endforelse
+                    <x-table.element.tr>
+                        <x-table.element.td colspan="7" data="Sub Total" />
+                        <x-table.element.td colspan="1" data="{{ $total }}" />
+                        <x-table.element.td colspan="1" data="" />
+                    </x-table.element.tr>
+                </x-table.element.tbody>
+
+            </x-table.type.responsive>
+
+        @endif
+        <span class="text-red-500">{{ $error_msg }}</span>
+
         <div class="grid grid-cols-2 gap-4">
 
             @php
@@ -47,26 +114,33 @@
             @endphp
             <x-form.type.standard title="Add Product">
                 <x-slot:right_header>
-                    <x-form.element.button1 title="Add Now" type="add" wire:click="addProduct" />
+                    {{-- <x-form.element.button1 title="Add Now" type="add" wire:click="addProduct" /> --}}
                 </x-slot:right_header>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div class="col-span-2">
 
-                        <x-form.element.input1 name="product" label="Select Product" required="required"
-                            wire:model.live="sku"  />
+                        <x-form.element.input1 name="sku" label="Select Product" required="required"
+                            wire:model.live="sku" />
                     </div>
 
                     @if ($product != null)
-                    <x-form.element.input1 name="state_id" label="Location" type="select" :options="$warehouses"
-                        required="required" wire:model.live="productLocation" />
-                    <x-form.element.input1 name="productRack" label="Rack" type="select" :options="$racks"
-                        required="required" wire:model="productRack" />
-                        <div class="bg-red-100 rounded p-4">
-                            <h2>{{ $product['name'] }}</h2>
-                            <h3>{{ $product['description'] }}</h3>
-                            <p>HSN Code: {{ $product['hsn_code'] }}</p>
-                            <p>MRP: {{ $mrp }}</p>
-                            <p>GST Percentage: {{ $product['gst_percentage'] }}</p>
+                        <x-form.element.input1 name="warehouse" label="Warehouse" type="select" :options="$warehouses"
+                            required="required" wire:model.live="warehouse" />
+                        <x-form.element.input1 name="productRack" label="Rack" type="select" :options="$racks"
+                            required="required" wire:model.live="productRack" />
+                        <div class="bg-yellow-50 border-3 border-indigo-500 rounded-lg">
+                            <div class="bg-indigo-500 text-white font-bold p-3 rounded-t-sm border-b-1">
+                                <h2>{{ $product['name'] }}</h2>
+                            </div>
+                            <div class="p-3 ">
+                                <h4>{{ $product['description'] }}</h4>
+                                <p>HSN Code: {{ $product['hsn_code'] }}</p>
+                                <p>MRP: {{ $mrp }}</p>
+                                <p>GST Percentage: {{ $product['gst_percentage'] }}</p>
+                            </div>
+                            <div class="bg-indigo-500 text-white font-bold p-3 rounded-b-sm border-t-1">
+                                <h2> Available Quantity : {{ $available_quantity }}</h2>
+                            </div>
                         </div>
                     @endif
                     <x-form.element.input1 name="salePrice" label="Sale Price" type="number" required="required"
@@ -77,71 +151,19 @@
                         wire:model.live="discountAmount" />
                     <x-form.element.input1 name="quantity" label="Quantity" type="number" required="required"
                         wire:model="quantity" />
-                    <x-form.element.input1 name="gst_percentage" label="GST Percentage" required="required"
+                    <x-form.element.input1 name="unit" label="Unit" wire:model="unit" />
+                    <x-form.element.input1 name="product.gst_percentage" label="GST Percentage" required="required"
                         type="number" wire:model="product.gst_percentage" />
                 </div>
                 <hr />
-                <x-ui.button.small title="Add Now" wire:click="addProduct" />
+                
+                @if ($available_quantity > 0)
+                    <x-ui.button.small title="Add Now" wire:click="addProduct" />
+                @endif
                 <span class="text-danger">{{ $product_error_msg }}</span>
             </x-form.type.standard>
             <div class="grid grid-cols-1 gap-4">
-                <x-table.type.responsive title="Added Product">
 
-                    <x-table.element.thead>
-                        <x-table.element.tr>
-                            {{-- <x-resources.invoice.index-th /> --}}
-                            <x-table.element.th data="Serial No." />
-                            <x-table.element.th data="SKU" />
-                            <x-table.element.th data="Description" />
-                            <x-table.element.th data="Price" />
-                            <x-table.element.th data="GST" />
-                            <x-table.element.th data="Quantity" />
-                            <x-table.element.th data="Total" />
-                            <x-table.element.th data="Action" />
-                        </x-table.element.tr>
-                    </x-table.element.thead>
-
-                    <x-table.element.tbody>
-                        @php
-                            $total = 0;
-                        @endphp
-                        @forelse ($added_products as $key => $i)
-                            <x-table.element.tr>
-                                {{-- <x-resources.invoice.index-td :data="$i" /> --}}
-                                <x-table.element.td data="{{ $key + 1 }}" />
-                                <x-table.element.td :data="$i['sku']" />
-                                <x-table.element.td>
-                                    {{ $i['name'] }} <br>
-                                    {{ $i['description'] }}
-                                </x-table.element.td>
-                                <x-table.element.td
-                                    data="{{ Helper::customMoneyFormat($i['sale_price'] / (1 + 0.01 * $i['gst_percentage'])) }}" />
-                                <x-table.element.td
-                                    data="{{ Helper::customMoneyFormat($i['sale_price'] - $i['sale_price'] / (1 + 0.01 * $i['gst_percentage'])) }}" />
-                                <x-table.element.td data="{{ $i['quantity'] }}" />
-                                <x-table.element.td data="{{ $i['sale_price'] * $i['quantity'] }}" />
-                                <x-table.element.td>
-                                    <span wire:click=removeProduct({{ $key }})>
-                                        <i class="fas fa-window-close"></i>
-                                    </span>
-                                </x-table.element.td>
-                            </x-table.element.tr>
-                            @php
-                                $total += $i['sale_price'] * $i['quantity'];
-                            @endphp
-                        @empty
-                            <x-table.element.tr>
-                                <x-table.element.td colspan="7" data="No Data Found" />
-                            </x-table.element.tr>
-                        @endforelse
-                        <x-table.element.tr>
-                            <x-table.element.td colspan="5" data="Sub Total" />
-                            <x-table.element.td colspan="1" data="{{ $total }}" />
-                            <x-table.element.td colspan="1" data="" />
-                        </x-table.element.tr>
-                    </x-table.element.tbody>
-
-                </x-table.type.responsive>
                 <x-form.type.standard title="Customer">
 
                     <x-form.element.input1 name="phone" label="Phone" required="required"
@@ -161,8 +183,6 @@
 
         </div>
 
-        <span class="text-red-500">{{ $error_msg }}</span>
-        <x-ui.button.small title="Submit" type="submit" wire:click="submit" />
         <div wire:loading>
             <div class="wire_loading">
 

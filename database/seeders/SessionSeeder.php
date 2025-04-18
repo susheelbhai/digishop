@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\SettingProduct;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class SettingProductSeeder extends Seeder
+class SessionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class SettingProductSeeder extends Seeder
     public function run(): void
     {
         include('data/data.php');
-        SettingProduct::insert($settings_product);
+        DB::table('sessions')->insert($sessions);
     }
 }

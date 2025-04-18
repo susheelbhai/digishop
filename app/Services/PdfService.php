@@ -25,9 +25,9 @@ class PdfService
     $payment_invoice = PDF::loadView('pdf.invoice.'.$invoice_detail['invoiceFormat']['slug'], ['data' => $invoice_detail, 'copy' => $copy]);
     $payment_invoice->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
     $this->applyWatermark($payment_invoice);
+    return $payment_invoice->stream('invoice_'.$id.'_'.$copy.'.pdf');
     $path = 'business/invoice/'.Auth::guard('business_owner')->user()->business_id;
     $invoice_name = $path.'/' . $invoice_detail['invoice_number'] . '_' . $copy . '.pdf';
-    return $payment_invoice->stream('invoice_'.$id.'_'.$copy.'.pdf');
     if (!file_exists('storage/'.$path)) {
       mkdir('storage/'.$path, 0777, true);
     }

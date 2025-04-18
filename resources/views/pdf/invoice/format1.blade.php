@@ -343,24 +343,24 @@
                                 </td>
                                 <td> {{ $i['hsn_code'] }}</td>
                                 <td>{{ App\Helpers\Helper::customMoneyFormat($i['taxable_amount']) }}</td>
-                                <td>{{ $i['quantity'] }}</td>
+                                <td>{{ $i['quantity'] }} {{ $i['unit'] }}</td>
                                 <td>{{ App\Helpers\Helper::customMoneyFormat($i['taxable_amount'] * $i['quantity']) }}</td>
                                 @if ($data['business_state_id'] == $data['customer_state_id'])
                                     <td class="amount">
                                         {{ $i['gst_percentage'] * 0.5 }}%
                                         <br>
-                                        {{ App\Helpers\Helper::customMoneyFormat($i['gst_amount']/2) }}
+                                        {{ App\Helpers\Helper::customMoneyFormat($i['quantity'] * $i['gst_amount']/2) }}
                                     </td>
                                     <td class="amount">
                                         {{ $i['gst_percentage'] * 0.5 }}%
                                         <br>
-                                        {{ App\Helpers\Helper::customMoneyFormat($i['gst_amount']/2) }}
+                                        {{ App\Helpers\Helper::customMoneyFormat($i['quantity'] * $i['gst_amount']/2) }}
                                     </td>
                                 @else
                                     <td class="amount" colspan="1">
                                         {{ $i['gst_percentage'] }}%
                                         <br>
-                                        {{ App\Helpers\Helper::customMoneyFormat($i['gst_amount']) }}
+                                        {{ App\Helpers\Helper::customMoneyFormat($i['quantity'] * $i['gst_amount']) }}
                                     </td>
                                 @endif
                                 <td>
@@ -444,10 +444,12 @@
                                         <td> IFSC Code </td>
                                         <td> : {{ $data['bank_ifsc'] }} </td>
                                     </tr>
+                                    @if ($data['bank_swift'] != '')
                                     <tr>
                                         <td> Swift Code </td>
                                         <td> : {{ $data['bank_swift'] }} </td>
                                     </tr>
+                                    @endif
                                 </table>
                             @endif
                         </td>
@@ -455,18 +457,15 @@
                             <td style="border: solid">
 
                                 <div class="authorised_sign">
-                                    <h5>For {{ $data['business_name'] }}</h5>
+                                    
 
-                                    @if ($data['invoiceSetting']['authorised_stamp'] == 1 && file_exists(asset($data['authorised_stamp'])))
-                                        <img src="{{ asset($data['authorised_stamp']) }}" width="72px"
-                                            style="margin-right: 48px;">
-                                    @endif
-                                    @if ($data['invoiceSetting']['authorised_sign'] == 1&& file_exists(asset($data['authorised_sign'])))
-                                        <img src="{{ asset($data['authorised_sign']) }}" width="126px"
+                                    @if ($data['invoiceSetting']['authorised_sign'] == 1 && Storage::exists($data['authorised_sign'], 'local') && $data['authorised_sign'] != '')
+                                        <img src="{{ asset('storage/'.$data['authorised_sign']) }}" width="126px"
                                             style="margin-top: 0">
+                                            
                                     @endif
-
-
+                                    
+                                    <h5>For {{ $data['business_name'] }}</h5>
                                     <h5 style="margin-top: 0">Authorised signatory</h5>
 
                                 </div>

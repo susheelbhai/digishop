@@ -19,7 +19,15 @@ return new class extends Migration
             $table->string('sample1')->nullable();
             $table->string('sample2')->nullable();
             $table->string('sample3')->nullable();
+            $table->boolean('state_code')->default(0);
+            $table->string('state_code_suffix')->default('');
+            $table->smallInteger('financial_year')->default(0);
+            $table->smallInteger('financial_year_hint')->default(0);
+            $table->string('financial_year_interfix')->default('');
+            $table->string('financial_year_suffix')->default('');
+            $table->smallInteger('business_order_id_digit')->default(0);
             $table->string('explanation')->nullable();
+
         });
     }
 

@@ -46,7 +46,7 @@
             {{ $label }}
             {!! $required == 'required' ? "<span class='text-danger'>*</span>" : '' !!}
         </label>
-        <select name="{{ $name }}" id="{{ $name }}" class="form-control wide" {{ $attributes }}>
+        <select name="{{ $name }}" id="{{ $name }}" class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" {{ $attributes }}>
             <option value="">Choose...</option>
             @foreach ($options as $i)
                 <option value="{{ $i->id }}" {{ $i->id == $value ? 'selected' : '' }}>{{ $i->name }}

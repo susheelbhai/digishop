@@ -28,7 +28,8 @@ class CreateOrderAction
     {
         $invoice_setting = InvoiceSetting::where('business_id', $this->business_id)
             ->with('invoiceNumberFormat')->first();
-        $invoice_number_format = $invoice_setting['invoiceNumberFormat']['slug'];
+            // dd($invoice_setting);
+        $invoice_number_format = $invoice_setting['invoiceNumberFormat'];
         $business_order_id = $this->calculateBusinessOrderId();
         $customer = $this->updateCustomer($customer_detail);
         $invoice_key = Str::random();
@@ -79,6 +80,7 @@ class CreateOrderAction
                         'description' => $value['description'],
                         'sale_price' => $value['sale_price'],
                         'quantity' => $value['quantity'],
+                        'unit' => $value['unit'],
                         'gst_percentage' => $value['gst_percentage'],
                     ]
                 );

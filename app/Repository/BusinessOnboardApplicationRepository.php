@@ -223,22 +223,22 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                         'business_id' => $business['id'],
                     ]
                 );
-                if (file_exists(asset($data->logo))) {
+                if (Storage::exists($data->logo, 'local') && $data->logo != '') {
                     $business->addMediaFromDisk($data->logo, 'local')->preservingOriginal()->toMediaCollection('logo');
                 }
-                if (file_exists(asset($data->gst_certificate))) {
+                if (Storage::exists($data->gst_certificate, 'local') && $data->gst_certificate != '') {
                     $business->addMediaFromDisk($data->gst_certificate, 'local')->preservingOriginal()->toMediaCollection('gst_certificate');
                 }
-                if (file_exists(asset($data->registration_certificate))) {
+                if (Storage::exists($data->registration_certificate, 'local') && $data->registration_certificate != '') {
                     $business->addMediaFromDisk($data->registration_certificate, 'local')->preservingOriginal()->toMediaCollection('registration_certificate');
                 }
-                if (file_exists(asset($data->authorised_sign))) {
+                if (Storage::exists($data->authorised_sign, 'local') && $data->authorised_sign != '') {
                     $business->addMediaFromDisk($data->authorised_sign, 'local')->preservingOriginal()->toMediaCollection('authorised_sign');
                 }
-                if (file_exists(asset($data->authorised_stamp))) {
+                if (Storage::exists($data->authorised_stamp, 'local') && $data->authorised_stamp != '') {
                     $business->addMediaFromDisk($data->authorised_stamp, 'local')->preservingOriginal()->toMediaCollection('authorised_stamp');
                 }
-                if (file_exists(asset($data->owner_photo))) {
+                if (Storage::exists($data->owner_photo, 'local') && $data->owner_photo != '') {
                     $business->addMediaFromDisk($data->owner_photo, 'local')->preservingOriginal()->toMediaCollection('owner_photo');
                 }
                 // dd($data);

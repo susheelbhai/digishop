@@ -6,7 +6,7 @@ class Helper
 {
     public static function invoiceNumber($data, $format = 'format1')
     {
-       return InvoiceNumber::$format($data);
+       return InvoiceNumber::generateNumber($data, $format);
     }
 
     public static function maskEmail($email)

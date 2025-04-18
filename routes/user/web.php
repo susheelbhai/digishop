@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('user.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/invoice/show/{id}/{invoice_key}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -42,7 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/transaction', TransactionController::class)->except(['delete']);
     Route::resource('/order', OrderController::class)->except(['delete'])->middleware(HasBalance::class, ['only' => ['create']]);
     Route::get('/invoice/generate/{id}/{copy}', [InvoiceController::class, 'generate'])->name('invoice.generate');
-    Route::get('/invoice/show/{id}/{invoice_key}', [InvoiceController::class, 'show'])->name('invoice.show');
     Route::get('/product_setting', [SettingController::class, 'productSetting'])->name('product.setting');
     Route::patch('/product_setting', [SettingController::class, 'productSettingUpdate'])->name('product.setting.update');
     Route::get('/invoice_setting', [InvoiceController::class, 'setting'])->name('invoice.setting');
