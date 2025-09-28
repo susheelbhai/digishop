@@ -12,11 +12,13 @@ class Standard extends Component
     public $action;
     public $target;
     public $style;
-    public function __construct( $action="#", $target="_self", $style='primary ')
+    public $class;
+    public function __construct( $action="#", $target="_self", $style='primary ', $class='')
     {
         $this->style = $style;
         $this->action = $action;
         $this->target = $target;
+        $this->class = $class;
     }
     
     public function render(): View|Closure|string

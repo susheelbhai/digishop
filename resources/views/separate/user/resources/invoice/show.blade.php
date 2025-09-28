@@ -5,8 +5,13 @@
         <title> Invoice Settings | {{ config('app.name') }}</title>
     </x-slot>
 
-    <x-form.type.standard title="General Invoice Setting" action="{{ route('invoice.setting.update') }}" div=2>
+    <x-form.type.standard style="{{ $tax_type_id == 1 ? 'non_gst' : 'gst' }}" title="{{ $tax_type_id == 1 ? 'Non GST' : 'GST' }} Invoice Setting" action="{{ route('invoice.setting.update',$tax_type_id) }}" div=2>
         @method('patch')
+
+
+        <input name="invoice_number_prefix" value="{{ $data['invoice_number_prefix'] }}" type="hidden"/>
+        <input name="invoice_number_suffix" value="{{ $data['invoice_number_suffix'] }}" type="hidden"/>
+        <input type="hidden" name="tax_type_id" value="{{ $tax_type_id }}">
         <x-form.element.input1 name="gstin" :value="$data['gstin']" type="switch"
             label="GSTIN" />
         <x-form.element.input1 name="pan" :value="$data['pan']" type="switch"

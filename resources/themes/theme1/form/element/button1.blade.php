@@ -1,4 +1,5 @@
-@if ($type == 'button')
+<div class="cursor-pointer">
+    @if ($type == 'button')
     <x-bg.color style="{{ $style }}" class="text-center rounded-full">
 
 
@@ -44,3 +45,5 @@
     </a>
 </div>
 @endif
+
+</div>

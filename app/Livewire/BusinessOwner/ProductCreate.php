@@ -11,11 +11,13 @@ use App\Models\Warehouse;
 use App\Models\WarehouseRack;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Models\TaxType;
 
 class ProductCreate extends Component
 {
     public $business_id;
     public $sku;
+    public $available_quantity;
     public $mrp;
     public $salePrice;
     public $purchasePrice;
@@ -24,24 +26,30 @@ class ProductCreate extends Component
     public $warehouse_rack_number;
     public $description;
     public $name;
-    public $product = [];
-    public $customer_detail = [];
+    public $product = null;
     public $business_detail;
     public $quantity = 1;
     public $gstPercentage;
     public $warehouses;
     public $user_session;
     public $error_msg = [];
+    public $taxTypes;
+    public $taxTypeId;
 
     function mount()
     {
         $this->user_session = \Illuminate\Support\Facades\Session::get('user');
         $this->business_id = $this->user_session['login']['business_id'];
         $business_id = $this->user_session['login']['business_id'];
+        $this->taxTypes = TaxType::get();
+
         $this->business_detail = Business::whereId($business_id)->first();
         $this->warehouses = Warehouse::whereBusinessId($business_id)->get();
         $settings = SettingProduct::whereBusinessId($business_id)->firstOrCreate();
         $this->gstPercentage = $settings->default_gst_percentage;
+
+
+        $this->available_quantity = 0;
     }
     public function render()
     {
@@ -52,7 +60,11 @@ class ProductCreate extends Component
     public function updatedSku($a)
     {
         $this->sku = $a;
-        $product = Product::where('sku', $a)->where('business_id', $this->business_id)->first();
+        $product = Product::where('sku', $a)
+        ->where('business_id', $this->business_id)
+        ->withSum('inventory', 'quantity')
+        ->latest()
+        ->first();
         $this->name = $product['name'] ?? '';
         $this->description = $product['description'] ?? '';
         $this->mrp = $product['mrp'] ?? '';
@@ -60,12 +72,21 @@ class ProductCreate extends Component
         $this->gstPercentage = $product['gst_percentage'] ?? '';
         $this->hsn_code = $product['hsn_code'] ?? '';
         Session::put('user', $this->user_session);
+        $this->product = $product;
+        $this->available_quantity = $product['inventory_sum_quantity'] ?? 0;
         // dd($product);
     }
+    
+    public function updatedTaxTypeId($a)
+    {
+        $this->taxTypeId = $a;
+        Session::put('user', $this->user_session);
+    }
+
     public function submit()
     {
         $this->validate();
-
+        // dd($this->taxTypeId);
         $rack = WarehouseRack::firstOrCreate([
             'warehouse_id' => $this->warehouse_id,
             'name' => $this->warehouse_rack_number,
@@ -89,6 +110,7 @@ class ProductCreate extends Component
             );
             $inv = new Inventory();
             $inv->business_id = $this->business_detail['id'];
+            $inv->tax_type_id = $this->taxTypeId;
             $inv->warehouse_rack_id = $rack['id'];
             $inv->product_id = $product['id'];
             $inv->quantity = $this->quantity;

@@ -3,21 +3,24 @@
 namespace App\Livewire\BusinessOwner;
 
 use App\Models\State;
+use App\Helpers\Helper;
 use App\Models\Product;
+use App\Models\TaxType;
 use Livewire\Component;
 use App\Models\Business;
 use App\Models\Customer;
+use App\Models\Warehouse;
+use App\Models\WarehouseRack;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Action\Order\CreateOrderAction;
-use App\Helpers\Helper;
-use App\Models\Warehouse;
-use App\Models\WarehouseRack;
 use Illuminate\Support\Facades\Session;
 
 class CreateOrder extends Component
 {
     public $business_id;
+    public $taxTypes;
+    public $taxTypeId = 2;
     public $sku;
     public $available_quantity;
     public $discountPercentage;
@@ -55,11 +58,12 @@ class CreateOrder extends Component
 
     function mount()
     {
-        $this->user_session = \Illuminate\Support\Facades\Session::get('user');
+        $this->user_session = Session::get('user');
         $this->business_id = $this->user_session['login']['business_id'];
         $this->customers = Customer::all();
         $this->products = Product::all();
         $this->states = State::all();
+        $this->taxTypes = TaxType::get();
         $this->business_detail = Business::whereId($this->business_id)->first();
         $this->warehouses = Warehouse::whereBusinessId($this->business_id)->get();
 
@@ -109,19 +113,25 @@ class CreateOrder extends Component
     }
     public function updatedProductRack($a)
     {
-        
+        if ($a == "") {
+            return;
+        }
+        // dd($a);
         $rack = WarehouseRack::where('id', $a)
         ->whereHas('warehouse', function ($query) {
             $query->where('business_id', $this->business_id);
         })
         ->whereHas('inventories', function ($query) {
-            $query->where('product_id', $this->product['id']); // Ensure filtering by product_id
+            $query->where('product_id', $this->product['id']);
+            $query->where('tax_type_id', $this->taxTypeId);
         })
         ->with(['inventories' => function ($query) {
-            $query->where('product_id', $this->product['id']); // Filter inventories by product_id in the relationship
+            $query->where('product_id', $this->product['id']);
+            $query->where('tax_type_id', $this->taxTypeId);
         }])
         ->withSum(['inventories as inventories_sum_quantity' => function ($query) {
-            $query->where('product_id', $this->product['id']); // Sum only for the specific product_id
+           $query->where('product_id', $this->product['id']);
+            $query->where('tax_type_id', $this->taxTypeId);
         }], 'quantity')
         ->first();
             // dd($rack);
@@ -138,9 +148,15 @@ class CreateOrder extends Component
             // }
 
             // array_filter returns an array, so you may need to reindex it
-        $this->available_quantity = $rack->inventories_sum_quantity -  $added_quantity;
+        $this->available_quantity = $rack?->inventories_sum_quantity -  $added_quantity;
         $this->product['rack_id'] = $a;
 
+        Session::put('user', $this->user_session);
+    }
+    public function updatedTaxTypeId($a)
+    {
+        $this->taxTypeId = $a;
+        $this->updatedProductRack($this->productRack);
         Session::put('user', $this->user_session);
     }
     public function updatedDiscountPercentage($a)
@@ -276,8 +292,8 @@ class CreateOrder extends Component
         } else {
             $this->error_msg = '';
             $business_id = Auth::guard('business_owner')->user()->business_id;
-            $action = new CreateOrderAction($business_id);
-            $action->createOrder($this->customer_detail, $this->business_detail, $this->added_products);
+            $action = new CreateOrderAction($business_id, $this->taxTypeId);
+            $action->createGstOrder($this->customer_detail, $this->business_detail, $this->added_products);
             return redirect()->route('order.index');
         }
     }

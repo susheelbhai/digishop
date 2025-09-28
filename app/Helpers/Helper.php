@@ -4,9 +4,9 @@ namespace App\Helpers;
 
 class Helper
 {
-    public static function invoiceNumber($data, $format = 'format1')
+    public static function invoiceNumber($data, $format = 'format1', $tax_type_id = 2)
     {
-       return InvoiceNumber::generateNumber($data, $format);
+       return InvoiceNumber::generateNumber($data, $format, $tax_type_id);
     }
 
     public static function maskEmail($email)

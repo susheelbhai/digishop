@@ -14,9 +14,12 @@ class Standard extends Component
     public $method;
     public $submitName;
     public $div;
-    public function __construct($title, $action="#", $method="post", $submitName="Submit", $div=1)
+    public $style;
+
+    public function __construct($title = null, $style = 'primary', $action="#", $method="post", $submitName="Submit", $div=1)
     {
         $this->div = $div;
+        $this->style = $style;
         $this->title = $title;
         $this->action = $action;
         $this->method = $method;

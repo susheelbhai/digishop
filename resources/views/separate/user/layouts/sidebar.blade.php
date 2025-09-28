@@ -1,11 +1,16 @@
 @livewire('business-owner.switch_business')
 <x-layout.sidebar.li1 name="Home" href="{{ route('dashboard') }}" icon="fas fa-tv" />
 <x-layout.sidebar.li1 name="Business Detail" href="{{ route('business.index') }}" icon="fa fa-city" />
-<x-layout.sidebar.li2 name=" Setting" icon="fa fa-cog">
-    <x-layout.sidebar.li21 name="Product Setting" href="{{ route('product.setting') }}" />
-    <x-layout.sidebar.li21 name="Invoice Setting" href="{{ route('invoice.setting') }}" />
-    <x-layout.sidebar.li21 name="Invoice Format" href="{{ route('invoice.format') }}" />
-    <x-layout.sidebar.li21 name="Invoice Number" href="{{ route('invoice.invoice_number_format') }}" />
+<x-layout.sidebar.li1 name="Product Setting" href="{{ route('product.setting') }}" icon="fa fa-city" />
+<x-layout.sidebar.li2 name="Non GST Setting" icon="fa fa-cog">
+    <x-layout.sidebar.li21 name="Invoice Setting" href="{{ route('invoice.setting', 1) }}" />
+    <x-layout.sidebar.li21 name="Invoice Format" href="{{ route('invoice.format', 1) }}" />
+    <x-layout.sidebar.li21 name="Invoice Number" href="{{ route('invoice.invoice_number_format', 1) }}" />
+</x-layout.sidebar.li2>
+<x-layout.sidebar.li2 name="GST Setting" icon="fa fa-cog">
+    <x-layout.sidebar.li21 name="Invoice Setting" href="{{ route('invoice.setting', 2) }}" />
+    <x-layout.sidebar.li21 name="Invoice Format" href="{{ route('invoice.format', 2) }}" />
+    <x-layout.sidebar.li21 name="Invoice Number" href="{{ route('invoice.invoice_number_format', 2) }}" />
 </x-layout.sidebar.li2>
 <x-layout.sidebar.li2 name="Customer" icon="fas fa-user">
     <x-layout.sidebar.li21 name="All Customer" href="{{ route('customer.index') }}" />

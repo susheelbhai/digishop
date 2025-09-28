@@ -6,6 +6,9 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="{{ asset('themes/ck_editor/js/vendors.min.js') }}"></script>
         <script src="{{ asset('themes/ck_editor/vendor_components/ckeditor/ckeditor.js') }}"></script>
+        <script src="{{ asset('js/common.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+
         {{ $head }}
     </x-slot>
 

@@ -51,7 +51,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::resource('/important_links', ImportantLinkController::class);
     Route::resource('/testimonial', TestimonialController::class);
     Route::resource('user', UserController::class);
-    Route::resource('/business', BusinessController::class)->except(['create', 'edit', 'update', 'store', 'delete']);
+    Route::resource('/business', BusinessController::class)->except(['create', 'store', 'delete']);
     Route::resource('/business_application', BusinessApplicationController::class);
     Route::post('/approve_business_application/{id}', [BusinessApplicationController::class, 'approve'])->name('business_application.approve');
     Route::post('/reject_business_application/{id}', [BusinessApplicationController::class, 'reject'])->name('business_application.reject');

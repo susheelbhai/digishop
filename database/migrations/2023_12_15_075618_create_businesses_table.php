@@ -23,9 +23,7 @@ return new class extends Migration
             $table->foreignId('state_id')->references('id')->on('states');
             $table->string('logo')->nullable();
             $table->string('gst_number')->nullable();
-            $table->string('gst_certificate')->nullable();
             $table->string('registration_number')->nullable();
-            $table->string('registration_certificate')->nullable();
             $table->string('iec_code')->nullable();
             $table->string('ad_code')->nullable();
             $table->string('arn_code')->nullable();
@@ -39,8 +37,6 @@ return new class extends Migration
             $table->foreignId('admin_id')->nullable()->references('id')->on('admins');
             $table->foreignId('approved_by')->nullable()->references('id')->on('admins');
             $table->foreignId('business_onboard_application_id')->nullable()->references('id')->on('business_onboard_applications');
-            $table->string('authorised_sign')->nullable();
-            $table->string('authorised_stamp')->nullable();
             $table->tinyInteger('invoice_start_id')->default(1);
             $table->foreignId('subscription_type_id')->nullable()->references('id')->on('subscription_types');
         });

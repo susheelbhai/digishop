@@ -1,6 +1,7 @@
 <x-layout.admin.app>
     <x-slot name="head">
         <title> All Invoice Format | {{ config('app.name') }}</title>
+        
     </x-slot>
 
     <x-grid.type.standard>

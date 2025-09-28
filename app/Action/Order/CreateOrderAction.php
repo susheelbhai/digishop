@@ -19,16 +19,19 @@ use Illuminate\Support\Facades\Request;
 class CreateOrderAction
 {
     public $business_id;
-    public function __construct($business_id)
+    public $tax_type_id;
+    public function __construct($business_id, $tax_type_id = 2)
     {
         $this->business_id = $business_id;
+        $this->tax_type_id = $tax_type_id;
     }
 
-    public function createOrder($customer_detail, $business_detail, $added_products)
+    public function createGstOrder($customer_detail, $business_detail, $added_products)
     {
         $invoice_setting = InvoiceSetting::where('business_id', $this->business_id)
+            ->where('tax_type_id', $this->tax_type_id)
             ->with('invoiceNumberFormat')->first();
-            // dd($invoice_setting);
+        // dd($invoice_setting);
         $invoice_number_format = $invoice_setting['invoiceNumberFormat'];
         $business_order_id = $this->calculateBusinessOrderId();
         $customer = $this->updateCustomer($customer_detail);
@@ -42,6 +45,7 @@ class CreateOrderAction
                     'business_order_id' => $business_order_id,
                     'invoice_key' => $invoice_key,
                     'invoice_format_id' => $invoice_setting['invoice_format_id'],
+                    'tax_type_id' => $this->tax_type_id,
                     'invoice_date' => Carbon::now(),
                     'customer_id' => $customer['id'],
                     'customer_gstin' => $customer_detail['gstin'],
@@ -66,10 +70,18 @@ class CreateOrderAction
                     'bank_account_holder_name' => $business_detail['bank_account_holder_name'],
                     'bank_ifsc' => $business_detail['bank_ifsc'],
                     'bank_swift' => $business_detail['bank_swift'],
-                    'authorised_stamp' => $business_detail['authorised_stamp'],
-                    'authorised_sign' => $business_detail['authorised_sign'],
                 ]
             );
+            if ($business_detail->getMedia('authorised_stamp')->count() > 0 && $invoice_setting['authorised_stamp'] == 1) {
+                $business_detail->getMedia('authorised_stamp')->last()->copy($order, 'authorised_stamp');
+            }
+            if ($business_detail->getMedia('authorised_sign')->count() > 0 && $invoice_setting['authorised_sign'] == 1) {
+                $business_detail->getMedia('authorised_sign')->last()->copy($order, 'authorised_sign');
+            }
+            if ($business_detail->getMedia('logo')->count() > 0 && $invoice_setting['logo'] == 1) {
+                $business_detail->getMedia('logo')->last()->copy($order, 'logo');
+            }
+
             // dd($added_products);
             foreach ($added_products as $key => $value) {
                 OrderProduct::create(
@@ -87,6 +99,8 @@ class CreateOrderAction
                 Inventory::create(
                     [
                         'business_id' => $this->business_id,
+                        'tax_type_id' => $this->tax_type_id,
+
                         'product_id' => $value['id'],
                         'warehouse_rack_id' => $value['warehouse_rack_id'],
                         'order_id' => $order->id,
@@ -97,7 +111,7 @@ class CreateOrderAction
             }
             // dd(Helper::invoiceNumber($order, 'format3'));
             Order::find($order->id)->update([
-                'invoice_number' => Helper::invoiceNumber($order, $invoice_number_format)
+                'invoice_number' => Helper::invoiceNumber($order, $invoice_number_format, $this->tax_type_id),
             ]);
             $ip_address = Request::ip();
             Transaction::updateOrCreate(
@@ -139,7 +153,7 @@ class CreateOrderAction
         );
         return $customer;
     }
-    
+
 
     public function calculateBusinessOrderId()
     {
@@ -155,6 +169,7 @@ class CreateOrderAction
         $data = Order::where('business_id', $this->business_id)
             ->where('invoice_date', '>=', $start_date)
             ->where('invoice_date', '<', $end_date)
+            ->where('tax_type_id', $this->tax_type_id)
             ->latest()
             ->get();
         if (count($data) == 0) {
@@ -165,5 +180,4 @@ class CreateOrderAction
         }
         return $start_id;
     }
-    
 }

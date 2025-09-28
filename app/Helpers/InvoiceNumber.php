@@ -23,8 +23,11 @@ class InvoiceNumber
     }
  
 
-    public static function generateNumber($data, $invoicer_format)
+    public static function generateNumber($data, $invoicer_format, $tax_type_id = 2)
     {
+        if ($tax_type_id == 1) {
+           return $data['business_order_id'];
+        }
         $number = '';
         if ($invoicer_format['state_code'] == 1) {
             $number .= $data['businessState']['gst_state_short_name']

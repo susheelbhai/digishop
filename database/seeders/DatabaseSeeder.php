@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             $this->call(ThemeSeeder::class);
             $this->call(AdminSeeder::class);
             // $this->call(PartnerSeeder::class);
+            $this->call(TaxTypeSeeder::class);
             $this->call(StateSeeder::class);
             $this->call(InvoiceFormatSeeder::class);
             $this->call(InvoiceNumberFormatSeeder::class);
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
             $this->call(ThemeSeeder::class);
             $this->call(AdminSeeder::class);
             $this->call(PartnerSeeder::class);
+            $this->call(TaxTypeSeeder::class);
             $this->call(StateSeeder::class);
             $this->call(InvoiceFormatSeeder::class);
             $this->call(InvoiceNumberFormatSeeder::class);

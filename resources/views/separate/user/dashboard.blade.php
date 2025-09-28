@@ -28,8 +28,8 @@
         </x-card.type.standard>
     </div>
 
-
-    @livewire('business-owner.order-list', ['page' => 'dashboard'])
+    @livewire('business-owner.order-list', ['page_heading' => 'Todays Non GST Orders', 'tax_type_id'=>1])
+    @livewire('business-owner.order-list', ['page_heading' => 'Todays GST Orders', 'tax_type_id'=>2])
 
     <script>
         const monthly_chart = document.getElementById('monthly_chart');

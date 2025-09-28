@@ -10,9 +10,13 @@
             <x-table.type.responsive title="Business Detail">
 
                 <x-table.element.tbody>
-                    <x-resources.business-application.show-business-data :data="$data" />
+                    <x-resources.business.show-business-data :data="$data" />
                     <x-resources.business-application.show-bank-data :data="$data" />
-                    
+                    <tr>
+                        <td colspan="2" class="text-center">
+                            <x-form.element.button1 title="Edit Details" href="{{ route('business.edit', $data->id) }}" />
+                        </td>
+                    </tr>
                 </x-table.element.tbody>
 
             </x-table.type.responsive>

@@ -45,12 +45,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoice/generate/{id}/{copy}', [InvoiceController::class, 'generate'])->name('invoice.generate');
     Route::get('/product_setting', [SettingController::class, 'productSetting'])->name('product.setting');
     Route::patch('/product_setting', [SettingController::class, 'productSettingUpdate'])->name('product.setting.update');
-    Route::get('/invoice_setting', [InvoiceController::class, 'setting'])->name('invoice.setting');
-    Route::get('/invoice_format', [InvoiceController::class, 'invoice_format'])->name('invoice.format');
+
+    Route::get('/invoice_setting/{tax_type_id}', [InvoiceController::class, 'setting'])->name('invoice.setting');
+    Route::patch('/update_invoice_setting/{tax_type_id}', [InvoiceController::class, 'update_setting'])->name('invoice.setting.update');
+
+    
+    Route::get('/invoice_format/{tax_type_id}', [InvoiceController::class, 'invoice_format'])->name('invoice.format');
+
     Route::get('/invoiceFormat/setDefault/{id}', [InvoiceController::class, 'invoiceFormatSetDefault'])->name('invoice.format.setDefault');
-    Route::get('/invoiceNumberFormat/setDefault/{id}', [InvoiceController::class, 'invoiceNumberFormatSetDefault'])->name('invoice_number.format.setDefault');
-    Route::get('/invoice_number_format', [InvoiceController::class, 'invoice_number_format'])->name('invoice.invoice_number_format');
-    Route::patch('/update_invoice_setting', [InvoiceController::class, 'update_setting'])->name('invoice.setting.update');
+    
+    Route::get('/invoice_number_format/{tax_type_id}', [InvoiceController::class, 'invoice_number_format'])->name('invoice.invoice_number_format');
+    Route::get('/invoiceNumberFormat/setDefault/{id}/{tax_type_id}', [InvoiceController::class, 'invoiceNumberFormatSetDefault'])->name('invoice_number.format.setDefault');
+    
+    
     Route::get('/create_payment_invoice/{id}', [InvoiceController::class, 'create_payment_invoice'])->name('create_payment_invoice');
 
     Route::name('report.')->prefix('report')->controller(ReportController::class)->group(function(){

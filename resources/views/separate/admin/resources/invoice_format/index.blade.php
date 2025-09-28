@@ -5,9 +5,9 @@
 
     <x-form.element.button1 :href="route('admin.invoiceFormat.create')" title="Add New" type="add" div="4" />
 
-    <x-grid.type.standard>
+    <x-grid.type.standard div="4">
         @foreach ($data as $i)
-            <x-card.type.image :src="asset($i['image'])" div="4">
+            <x-card.type.image :src="asset($i['image'])">
                 <x-card.element.footer>
                     {{ $i['name'] }}
                     <a href="{{ route('admin.invoiceFormat.edit', $i['id']) }}">

@@ -32,7 +32,7 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => base_path('public/storage'),
             'serve' => true,
             'throw' => false,
             'report' => false,
@@ -40,7 +40,7 @@ return [
 
         'private' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
+            'root' => base_path('public/storage'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
@@ -49,7 +49,7 @@ return [
         
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => base_path('public/storage'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
@@ -58,7 +58,7 @@ return [
 
         'media' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/media'),
+            'root' => base_path('public/storage/media'),
             'url' => env('APP_URL').'/storage/media',
             'visibility' => 'public',
             'throw' => false,

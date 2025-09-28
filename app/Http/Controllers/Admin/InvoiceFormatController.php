@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\TaxType;
 use Illuminate\Http\Request;
 use App\Models\InvoiceFormat;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,8 @@ class InvoiceFormatController extends Controller
      */
     public function create()
     {
-        return view('admin.resources.invoice_format.create');
+        $taxTypes = TaxType::all();
+        return view('admin.resources.invoice_format.create', compact('taxTypes'));
     }
 
     /**
@@ -34,11 +36,11 @@ class InvoiceFormatController extends Controller
         $obj = new InvoiceFormat();
         $obj->name = $request->name;
         $obj->slug = $request->slug;
+        $obj->tax_type_id = $request->tax_type_id;
+        
         if ($request->hasFile('image')) {
-            $image_name = '/images/invoice_sample/'.uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->image->move(public_path('/storage/images/invoice_sample/'), $image_name);
-            $obj->image = $image_name;
-            
+            $path = $request->file('image')->store('images/invoice_sample');
+            $obj->image = $path;
         }
         $obj->save();
         return redirect()->route('admin.invoiceFormat.index')->with('success', 'Invoice Format submitted successfully');
@@ -57,8 +59,9 @@ class InvoiceFormatController extends Controller
      */
     public function edit(string $id)
     {
+        $taxTypes = TaxType::all();
         $data = InvoiceFormat::find($id);
-        return view('admin.resources.invoice_format.edit',compact('data'));
+        return view('admin.resources.invoice_format.edit',compact('data', 'taxTypes'));
     }
 
     /**

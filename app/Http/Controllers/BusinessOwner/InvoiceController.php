@@ -25,17 +25,19 @@ class InvoiceController extends Controller
         Order::whereId($id)->whereInvoiceKey($invoice_key)->firstOrFail();
         return GeneratePDF::taxInvoice($id, 'original');
     }
-    public function setting()
+    public function setting($tax_type_id)
     {
         $business_id = Auth::guard('business_owner')->user()->business_id;
-        $data = InvoiceSetting::where('business_id',$business_id)->first();
+        $data = InvoiceSetting::where('business_id',$business_id)
+        ->where('tax_type_id',$tax_type_id)
+        ->first();
         if(!isset($data)){
-            InvoiceSetting::create(['business_id' => $business_id]);
+            InvoiceSetting::create(['business_id' => $business_id, 'tax_type_id' => $tax_type_id]);
         }
-        $data = InvoiceSetting::where('business_id',$business_id)->first();
-        return view('user.resources.invoice.show', compact('data'));
+        $data = InvoiceSetting::where('business_id',$business_id)->where('tax_type_id',$tax_type_id)->first();
+        return view('user.resources.invoice.show', compact('data', 'tax_type_id'));
     }
-    public function update_setting(Request $request)
+    public function update_setting(Request $request, $tax_type_id)
     {
         $pan =0;
         $gstin =0;
@@ -44,30 +46,34 @@ class InvoiceController extends Controller
         $authorised_sign =0;
         $authorised_stamp =0;
         $amount_in_words =0;
-        if (isset($request->gstin)) {
+        // return $request->all();
+        if (isset($request->gstin) && $request->gstin != 0) {
             $gstin = 1;
         }
-        if (isset($request->pan)) {
+        if (isset($request->pan) && $request->pan != 0) {
             $pan = 1;
         }
-        if (isset($request->bank_detail)) {
+        if (isset($request->bank_detail) && $request->bank_detail != 0) {
             $bank_detail = 1;
         }
-        if (isset($request->payment_terms)) {
+        if (isset($request->payment_terms) && $request->payment_terms != 0) {
             $payment_terms = 1;
         }
-        if (isset($request->authorised_sign)) {
+        if (isset($request->authorised_sign) && $request->authorised_sign != 0) {
             $authorised_sign = 1;
         }
-        if (isset($request->authorised_stamp)) {
+        if (isset($request->authorised_stamp) && $request->authorised_stamp != 0) {
             $authorised_stamp = 1;
         }
-        if (isset($request->amount_in_words)) {
+        if (isset($request->amount_in_words) && $request->amount_in_words != 0) {
             $amount_in_words = 1;
         }
         $business_id = Auth::guard('business_owner')->user()->business_id;
         InvoiceSetting::updateOrCreate(
-            ['business_id' => $business_id],
+            [
+                'business_id' => $business_id,
+                'tax_type_id' => $tax_type_id,
+            ],
             [
                 'pan' =>$pan,
                 'gstin' =>$gstin,
@@ -76,18 +82,20 @@ class InvoiceController extends Controller
                 'authorised_sign' =>$authorised_sign,
                 'authorised_stamp' =>$authorised_stamp,
                 'amount_in_words' =>$amount_in_words,
+                'invoice_number_prefix' => $request->invoice_number_prefix,
+                'invoice_number_suffix' => $request->invoice_number_suffix,
             ]
         );
         return back();
     }
 
-    public function invoice_format() {
+    public function invoice_format($tax_type_id) {
         $business_id = Auth::guard('business_owner')->user()->business_id;
         $data = InvoiceSetting::firstOrNew([
             'business_id' =>$business_id
         ]);
-        $all_formats = InvoiceFormat::all();
-        return view('user.resources.invoice.formats', compact('data', 'all_formats'));
+       $all_formats = InvoiceFormat::where('tax_type_id', $tax_type_id)->get();
+        return view('user.resources.invoice.formats', compact('data', 'all_formats', 'tax_type_id'));
     }
 
     public function invoiceFormatSetDefault($id) {
@@ -97,18 +105,24 @@ class InvoiceController extends Controller
         return back();
     }
 
-    public function invoiceNumberFormatSetDefault($id) {
+
+    public function invoice_number_format($tax_type_id) {
+
         $business_id = Auth::guard('business_owner')->user()->business_id;
-        $data = InvoiceSetting::where('business_id', $business_id)->first();
-        $data->update(['invoice_number_format_id'=> $id]);
-        return back();
+        $data = InvoiceSetting::where('business_id', $business_id)
+        ->where('tax_type_id', $tax_type_id)
+       ->first();
+        $all_formats = InvoiceNumberFormat::all();
+        return view('user.resources.invoice.invoice_numbers', compact('data', 'all_formats', 'tax_type_id'));
     }
 
-    public function invoice_number_format() {
+    public function invoiceNumberFormatSetDefault($id, $tax_type_id) {
         $business_id = Auth::guard('business_owner')->user()->business_id;
-        $data = InvoiceSetting::where('business_id', $business_id)->first();
-        $all_formats = InvoiceNumberFormat::all();
-        return view('user.resources.invoice.invoice_numbers', compact('data', 'all_formats'));
+        $data = InvoiceSetting::where('business_id', $business_id)
+            ->where('tax_type_id', $tax_type_id)
+            ->first();
+        $data->update(['invoice_number_format_id'=> $id]);
+        return back();
     }
 
     public function create_payment_invoice($id) {        

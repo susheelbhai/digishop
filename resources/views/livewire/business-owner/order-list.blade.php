@@ -1,4 +1,4 @@
-<x-table.type.paginate :title="$page_heading" :data="$order_data">
+<x-table.type.paginate :title="$page_heading" :data="$order_data" style="{{ $tax_type_id==1?'non_gst':'gst' }}">
 
     <x-table.element.thead>
         <x-table.element.tr>

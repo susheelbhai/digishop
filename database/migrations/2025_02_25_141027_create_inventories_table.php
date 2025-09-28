@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('business_id')->references('id')->on('businesses');
+            $table->foreignId('tax_type_id')->default(2)->references('id')->on('tax_types');
             $table->foreignId('warehouse_rack_id')->references('id')->on('warehouse_racks');
             $table->foreignId('product_id')->references('id')->on('products');
             $table->foreignId('order_id')->nullable()->references('id')->on('orders');

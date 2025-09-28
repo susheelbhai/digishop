@@ -18,13 +18,7 @@ class OrderController extends Controller
     }
     public function index()
     {
-        $business_id = Auth::guard('business_owner')->user()->business_id;
-         $data = Order::where('business_id', $business_id)
-        ->withSum([
-            'products' => fn ($query) => $query->select(DB::raw('sum(quantity*sale_price*(1+0.01*gst_percentage))'))
-        ], 'amount')
-        ->latest()->get();
-        return view('user.resources.order.index', compact('data'));
+        return view('user.resources.order.index');
     }
 
     public function create()

@@ -5,7 +5,7 @@
         <title> All Business | {{ config('app.name') }}</title>
     </x-slot>
 
-    <x-form.element.button1 href="{{ route('business.create') }}" style='primary' title="Add New" />  
+    <!-- <x-form.element.button1 href="{{ route('business.create') }}" style='primary' title="Add New" />   -->
     
 
     <div class="grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-hidden">

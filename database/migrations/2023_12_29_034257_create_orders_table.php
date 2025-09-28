@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('tax_type_id')->default(2)->references('id')->on('tax_types');
             $table->string('business_order_id')->nullable();
             $table->string('invoice_number')->nullable();
             $table->string('invoice_key')->nullable();
@@ -43,8 +44,6 @@ return new class extends Migration
             $table->string('bank_account_holder_name')->nullable();
             $table->string('bank_ifsc')->nullable();
             $table->string('bank_swift')->nullable();
-            $table->string('authorised_sign')->nullable();
-            $table->string('authorised_stamp')->nullable();
             $table->string('invoice_original_name')->nullable();
             $table->string('invoice_duplicate_name')->nullable();
         });

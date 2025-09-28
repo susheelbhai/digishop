@@ -55,25 +55,36 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                 'partner_id' => $request->partner_id,
                 'subscription_type_id' => $request->subscription_type_id,
             ]);
-            if ($request->logo != '') {
-                $logo = Storage::put('images/logo', $request->logo);
+            if ($request->hasFile('logo')) {
+                $path = $request->file('logo')->store('business/documents/' . $data['id']);
+                $data->logo = $path;
             }
-            if ($request->registration_certificate != '') {
-                $registration_certificate = Storage::put('business/documents/' . $data['id'], $request->registration_certificate);
+            if ($request->hasFile('registration_certificate')) {
+                $path = $request->file('registration_certificate')->store('business/documents/' . $data['id']);
+                $data->registration_certificate = $path;
             }
-            if ($request->gst_certificate != '') {
-                $gst_certificate = Storage::put('business/documents/' . $data['id'], $request->gst_certificate);
+            if ($request->hasFile('gst_certificate')) {
+                $path = $request->file('gst_certificate')->store('business/documents/' . $data['id']);
+                $data->gst_certificate = $path;
             }
-            if ($request->owner_profile_pic != '') {
-                $owner_profile_pic = Storage::put('images/profile_pic/user', $request->owner_profile_pic);
+            if ($request->hasFile('owner_profile_pic')) {
+                $path = $request->file('owner_profile_pic')->store('images/profile_pic');
+                $data->owner_photo = $path;
             }
-
-            if ($request->authorised_sign != '') {
-                $authorised_sign = Storage::put('business/authorised_sign', $request->authorised_sign);
+            if ($request->hasFile('authorised_sign')) {
+                $path = $request->file('authorised_sign')->store('business/authorised_sign');
+                $data->authorised_sign = $path;
             }
-            if ($request->authorised_stamp != '') {
-                $authorised_stamp = Storage::put('business/authorised_stamp', $request->authorised_stamp);
+            if ($request->hasFile('authorised_stamp')) {
+                $path = $request->file('authorised_stamp')->store('business/authorised_stamp');
+                $data->authorised_stamp = $path;
             }
+            $logo = $data->logo;
+            $registration_certificate = $data->registration_certificate;
+            $gst_certificate = $data->gst_certificate;
+            $owner_profile_pic = $data->owner_photo;
+            $authorised_sign = $data->authorised_sign;
+            $authorised_stamp = $data->authorised_stamp;
             $data->update([
                 'logo' => $logo,
                 'registration_certificate' => $registration_certificate,
@@ -176,9 +187,7 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                     'phone' => $data->phone,
                     'logo' => $data->logo,
                     'registration_number' => $data->registration_number,
-                    'registration_certificate' => $data->registration_certificate,
                     'gst_number' => $data->gst_number,
-                    'gst_certificate' => $data->gst_certificate,
                     'address' => $data->address,
                     'city' => $data->city,
                     'pin' => $data->pin,
@@ -195,8 +204,6 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                     'partner_id' => $data->partner_id,
                     'admin_id' => $data->admin_id,
                     'approved_by' => Auth::guard('admin')->user()->id,
-                    'authorised_sign' => $data->authorised_sign,
-                    'authorised_stamp' => $data->authorised_stamp,
                     'subscription_type_id' => $data->subscription_type_id,
                 ]);
                 $user = BusinessOwner::updateOrCreate([
@@ -223,23 +230,26 @@ class BusinessOnboardApplicationRepository implements BusinessOnboardApplication
                         'business_id' => $business['id'],
                     ]
                 );
-                if (Storage::exists($data->logo, 'local') && $data->logo != '') {
-                    $business->addMediaFromDisk($data->logo, 'local')->preservingOriginal()->toMediaCollection('logo');
+                // dd(Storage::exists($data->logo));
+                if ($data->logo != '' && Storage::exists($data->logo)) {
+                    $business->addMediaFromDisk($data->logo)->preservingOriginal()->toMediaCollection('logo');
                 }
-                if (Storage::exists($data->gst_certificate, 'local') && $data->gst_certificate != '') {
-                    $business->addMediaFromDisk($data->gst_certificate, 'local')->preservingOriginal()->toMediaCollection('gst_certificate');
+                if ($data->gst_certificate != '' && Storage::exists($data->gst_certificate)) {
+                    $business->addMediaFromDisk($data->gst_certificate)->preservingOriginal()->toMediaCollection('gst_certificate');
                 }
-                if (Storage::exists($data->registration_certificate, 'local') && $data->registration_certificate != '') {
-                    $business->addMediaFromDisk($data->registration_certificate, 'local')->preservingOriginal()->toMediaCollection('registration_certificate');
+
+                if ( $data->registration_certificate != '' && Storage::exists($data->registration_certificate)) {
+                    $business->addMediaFromDisk($data->registration_certificate)->preservingOriginal()->toMediaCollection('registration_certificate');
                 }
-                if (Storage::exists($data->authorised_sign, 'local') && $data->authorised_sign != '') {
-                    $business->addMediaFromDisk($data->authorised_sign, 'local')->preservingOriginal()->toMediaCollection('authorised_sign');
+
+                if ( $data->authorised_sign != '' && Storage::exists($data->authorised_sign)) {
+                    $business->addMediaFromDisk($data->authorised_sign)->preservingOriginal()->toMediaCollection('authorised_sign');
                 }
-                if (Storage::exists($data->authorised_stamp, 'local') && $data->authorised_stamp != '') {
-                    $business->addMediaFromDisk($data->authorised_stamp, 'local')->preservingOriginal()->toMediaCollection('authorised_stamp');
+                if ( $data->authorised_stamp != '' && Storage::exists($data->authorised_stamp)) {
+                    $business->addMediaFromDisk($data->authorised_stamp)->preservingOriginal()->toMediaCollection('authorised_stamp');
                 }
-                if (Storage::exists($data->owner_photo, 'local') && $data->owner_photo != '') {
-                    $business->addMediaFromDisk($data->owner_photo, 'local')->preservingOriginal()->toMediaCollection('owner_photo');
+                if ( $data->owner_photo != '' && Storage::exists($data->owner_photo)) {
+                    $business->addMediaFromDisk($data->owner_photo)->preservingOriginal()->toMediaCollection('owner_photo');
                 }
                 // dd($data);
                 ApplicationApproved::dispatch($data, $user_password);

@@ -25,6 +25,11 @@
     --color-popover: var(--popover);
     --color-popover-foreground: var(--popover-foreground);
 
+    --color-non_gst: var(--non_gst);
+    --color-non_gst-foreground: var(--non_gst-foreground);
+    --color-gst: var(--gst);
+    --color-gst-foreground: var(--gst-foreground);
+
     --color-primary: var(--primary);
     --color-primary-foreground: var(--primary-foreground);
     --color-primary-light: var(--primary-light);
@@ -97,15 +102,20 @@
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
 
+    --non_gst: #6b0505;
+    --non_gst-foreground: #fff;
+    --gst: #056a1e;
+    --gst-foreground: #f1fcf5;
+
     --primary: #0313AC;
     --primary-foreground: #fff;
     --primary-light: #e7edfb;
     --primary-light-foreground: #0313AC;
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
-    --success: green;
+    --success: rgb(4, 80, 4);
     --success-foreground: #fff;
-    --danger: red;
+    --danger: rgb(124, 8, 8);
     --danger-foreground: #fff;
     --warning: rgb(243, 226, 115);
     --warning-foreground: #000;

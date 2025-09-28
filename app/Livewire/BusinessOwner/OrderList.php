@@ -17,11 +17,15 @@ class OrderList extends Component
     public $page_heading;
     public $customer_id;
     public $input = '';
-    public function mount($page = 'orders', $customer_id='')
+    public $tax_type_id;
+
+    public function mount($page = 'orders', $page_heading = null, $customer_id = '', $tax_type_id = 1)
     {
         // dd($customer_id);
         $this->page = $page;
         $this->customer_id = $customer_id;
+        $this->tax_type_id = $tax_type_id;
+
         $this->business_id = Auth::guard('business_owner')->user()->business_id;
         switch ($page) {
             case 'dashboard':
@@ -30,10 +34,13 @@ class OrderList extends Component
             case 'customer':
                 $this->page_heading = 'Order';
                 break;
-            
+
             default:
                 $this->page_heading = 'Order';
                 break;
+        }
+        if ($page_heading) {
+            $this->page_heading = $page_heading;
         }
     }
     public function updatedInput($input)
@@ -46,8 +53,9 @@ class OrderList extends Component
             ->where(function ($query) {
                 $this->query($query);
             })
+            ->where('tax_type_id', $this->tax_type_id)
             ->withSum([
-                'products' => fn ($query) => $query->select(DB::raw('sum(quantity*sale_price)'))
+                'products' => fn($query) => $query->select(DB::raw('sum(quantity*sale_price)'))
             ], 'amount')
             ->latest()
             ->paginate(12);
@@ -59,33 +67,31 @@ class OrderList extends Component
         if ($this->page == 'orders') {
             if ($this->input != '') {
                 $query
-                ->where('customer_phone', 'like', '%' . $this->input . '%')
-                ->orWhere('customer_name', 'like', '%' . $this->input . '%')
-                ->orWhere('customer_email', 'like', '%' . $this->input . '%')
-                ->orWhere('customer_gstin', 'like', '%' . $this->input . '%');           
-            } 
+                    ->where('customer_phone', 'like', '%' . $this->input . '%')
+                    ->orWhere('customer_name', 'like', '%' . $this->input . '%')
+                    ->orWhere('customer_email', 'like', '%' . $this->input . '%')
+                    ->orWhere('customer_gstin', 'like', '%' . $this->input . '%');
+            }
         }
         // dd($this->page);
         if ($this->page == 'customer') {
             $query
-            ->where('customer_id', '=', $this->customer_id );
+                ->where('customer_id', '=', $this->customer_id);
             if ($this->input != '') {
                 $query
-                ->where('id', '=', $this->input );
-                       
-            } 
+                    ->where('id', '=', $this->input);
+            }
         }
         if ($this->page == 'dashboard') {
             // dd(Carbon::today());
             $query
-            ->where('created_at', '>=', Carbon::today());
+                ->where('created_at', '>=', Carbon::today());
             if ($this->input != '') {
                 $query
-                ->where('customer_phone', 'like', '%' . $this->input . '%')
-                ->orWhere('customer_name', 'like', '%' . $this->input . '%')
-                ->orWhere('customer_email', 'like', '%' . $this->input . '%');
-                       
-            } 
+                    ->where('customer_phone', 'like', '%' . $this->input . '%')
+                    ->orWhere('customer_name', 'like', '%' . $this->input . '%')
+                    ->orWhere('customer_email', 'like', '%' . $this->input . '%');
+            }
         }
     }
 }

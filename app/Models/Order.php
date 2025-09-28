@@ -6,6 +6,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Order extends Model implements HasMedia
 {
@@ -34,4 +35,19 @@ class Order extends Model implements HasMedia
     public function invoiceFormat() {
         return $this->belongsTo(InvoiceFormat::class);
     }
+
+    public function getLastMediaBase64(string $collection = 'default'): ?string
+    {
+        $media = $this->getMedia($collection)->last();
+
+        if ($media instanceof Media) {
+            $path = $media->getPath(); // local storage path
+            $contents = file_get_contents($path);
+
+            return 'data:' . $media->mime_type . ';base64,' . base64_encode($contents);
+        }
+
+        return null;
+    }
+
 }

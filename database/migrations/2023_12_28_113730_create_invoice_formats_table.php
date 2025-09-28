@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('invoice_formats', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('tax_type_id')->default(2)->references('id')->on('tax_types');
             $table->string('slug');
             $table->string('name');
             $table->string('image')->nullable();

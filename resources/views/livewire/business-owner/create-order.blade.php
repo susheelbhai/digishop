@@ -38,10 +38,10 @@
     <x-grid.type.standard>
 
         @if (count($added_products) > 0)
-            <x-ui.button.small title="Generate Invoice" type="submit" wire:click="submit" />
+            <x-ui.button.small title="Generate {{$taxTypeId == 1 ? 'Non GST' : 'GST'}} Invoice" type="submit" wire:click="submit" style="{{$taxTypeId == 1 ? 'non_gst' : 'gst'}}" />
 
 
-            <x-table.type.responsive title="Added Product">
+            <x-table.type.responsive title="Added Product" style="{{$taxTypeId == 1 ? 'non_gst' : 'gst'}}">
 
                 <x-table.element.thead>
                     <x-table.element.tr>
@@ -100,10 +100,15 @@
                 </x-table.element.tbody>
 
             </x-table.type.responsive>
-
+        @else
+        <div class="border rounded">
+            <x-form.element.input1 name="taxTypeId" label="Tax Type" type="select" :options="$taxTypes"
+                required="required" wire:model.live="taxTypeId" />
+        </div>
         @endif
         <span class="text-red-500">{{ $error_msg }}</span>
 
+        
         <div class="grid grid-cols-2 gap-4">
 
             @php
@@ -112,7 +117,7 @@
                     (object) ['id' => 2, 'name' => 'warehouse'],
                 ];
             @endphp
-            <x-form.type.standard title="Add Product">
+            <x-form.type.standard title="Add Product" class="bg-red-100">
                 <x-slot:right_header>
                     {{-- <x-form.element.button1 title="Add Now" type="add" wire:click="addProduct" /> --}}
                 </x-slot:right_header>
@@ -122,7 +127,7 @@
                         <x-form.element.input1 name="sku" label="Select Product" required="required"
                             wire:model.live="sku" />
                     </div>
-
+                    
                     @if ($product != null)
                         <x-form.element.input1 name="warehouse" label="Warehouse" type="select" :options="$warehouses"
                             required="required" wire:model.live="warehouse" />
